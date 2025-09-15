@@ -29,15 +29,15 @@ export default function PrivacyPage() {
               <Shield className="h-8 w-8 text-[#BF6849]" />
             </div>
             <CardTitle className="text-3xl font-bold text-[#3A403D]">Privacy Policy</CardTitle>
-            <p className="text-[#3A403D]/60 text-lg">CRUISERFEST Show-N-Shine Registration App</p>
+            <p className="text-[#3A403D]/60 text-lg"> 2025 Cars For A Cause | Registration App</p>
             <p className="text-[#3A403D]/80 font-semibold">Effective Date: July 31, 2025</p>
           </CardHeader>
           <CardContent className="prose prose-lg max-w-none">
             <div className="space-y-8 text-[#3A403D]">
               <div className="bg-[#F2EEEB] p-6 rounded-lg">
                 <p className="text-lg leading-relaxed mb-4">
-                  At CRUISERFEST, your privacy matters. This Privacy Policy explains how we collect, use, and protect
-                  your personal information when you use the CRUISERFEST Show-N-Shine Registration App ("App").
+                  At Cars For A Cause, your privacy matters. This Privacy Policy explains how we collect, use, and
+                  protect your personal information when you use the App ("App").
                 </p>
                 <p className="font-semibold text-[#BF6849] mb-0">
                   By using the App, you consent to the practices described below.
@@ -241,24 +241,23 @@ export default function PrivacyPage() {
                 <p className="mb-4">Questions or concerns? Reach out:</p>
                 <div className="bg-[#F2EEEB] p-4 rounded-lg">
                   <p className="font-semibold text-[#3A403D] mb-0">
-                    📍 Land Cruiser Heritage Museum
+                    Cars For A Cause
                     <br />
-                    Salt Lake City, Utah
+                    Orem, Utah
                   </p>
                 </div>
               </section>
 
               <div className="bg-[#A9BF88]/10 border-l-4 border-[#A9BF88] p-6 rounded-r-lg">
                 <p className="text-[#BF6849] font-bold text-lg mb-0">
-                  Thank you for being part of CRUISERFEST. We're committed to keeping your information secure and your
-                  Cruiser in the spotlight.
+                  Thank you for being part of Cars For A Cause. We&#39;re committed to keeping your information secure and your vehicle in the spotlight.
                 </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <div className="text-center mt-8">
+        <div className="mt-8 text-center">
           <Button
             asChild
             variant="outline"
