@@ -4,96 +4,26 @@ import { MapPin } from "lucide-react"
 export default function SchedulePage() {
   const scheduleItems = [
     {
-      time: "8:00",
-      period: "AM",
-      title: "DOORS OPEN",
-      description: "Ticket sales are available at the door. Registration for Show N Shine is open until 10 AM.",
-      location: "NORTH LOT",
-    },
-    {
-      time: "8:30",
-      period: "AM",
-      title: "RC COURSE OPEN",
-      description:
-        "A CruiserFest debut - enjoy RC crawler courses organized by local volunteers. Bring your scaled crawlers for a day of fun.",
-      location: "NORTH LOT",
-    },
-    {
       time: "9:00",
       period: "AM",
-      title: "MUSEUM TOUR",
-      description: "Explore the museum collection with a guide. 60 minutes. Group meets at museum lobby.",
-      location: "LOBBY",
+      title: "CAR SHOW REGISTRATION OPEN ON SITE",
+      description: "Ticket sales are available at the door. Registration for the show is open until 10:30 AM.",
+      location: "Big Kid Custom Rides | Orem, UT",
     },
     {
       time: "10:00",
       period: "AM",
-      title: "WORKSHOP WITH OVERLAND EXPERTS",
+      title: "DOORS OPEN",
       description:
-        "Skills training with industry leading offroad instructors. Compete in timed trials for prizes. Must pre-register.",
-      location: "EAST ALLEY",
+        "Come check out the amazing builds and rides",
+      location: "Big Kid Custom Rides | Orem, UT",
     },
     {
-      time: "10:30",
-      period: "AM",
-      title: "PRESENTER: 4X4 ENGINEERING",
-      description:
-        "Manufacturers of offroad equipment since 1973. Meet the team from Japan and check out their latest offerings.",
-      location: "TOYOTA STAGE",
-    },
-    {
-      time: "11:00",
-      period: "AM",
-      title: "FOOD TRUCKS OPEN",
-      description: "Hungry? Check in with our food truck vendors serving yum until 3:00 PM.",
-      location: "SOUTH LOT",
-    },
-    {
-      time: "11:15",
-      period: "AM",
-      title: "EXPEDITIONS: GREENLAND",
-      description:
-        "Meet the expedition team and watch the trailer for their latest documentary on their record Greenland crossing. In theatres for a limited time.",
-      location: "TOYOTA STAGE",
-    },
-    {
-      time: "11:30",
-      period: "AM",
-      title: "MUSEUM TOUR",
-      description: "Explore the museum collection with a guide. 60 minutes. Group meets at museum lobby.",
-      location: "LOBBY",
-    },
-    {
-      time: "12:30",
+      time: "2:00",
       period: "PM",
-      title: "SHOW N SHINE AWARDS",
-      description:
-        "You've voted for best of show. Now find out who wins in five categories in CruiserFest's Show N Shine competition. Thanks to Wasatch Cruisers.",
-      location: "TOYOTA STAGE",
-    },
-    {
-      time: "1:00",
-      period: "PM",
-      title: "FEATURE SPEAKERS: XOVERLAND + EXPEDITION PORTAL",
-      description:
-        "25K milestones expedition - Clay Croft presents crossing N. America, Europe, and preparing to cross Africa. Crossing continents: Scott Brady's 7 continent journey.",
-      location: "TOYOTA STAGE",
-    },
-    {
-      time: "3:00",
-      period: "PM",
-      title: "WORKSHOP WITH STATE AUTOMOTIVE",
-      description:
-        "You want to buy a Land Cruiser? Have a seat for a lecture on pre-purchase inspection tips and what to look for in a clean Land Cruiser. Presented by State Automotive's Dustin Stewart.",
-      location: "AUDITORIUM",
-    },
-    {
-      time: "4:00",
-      period: "PM",
-      title: "OPPORTUNITY DRAWING AWARDS",
-      description:
-        "Close out the day with us by winning top shelf gear from our amazing sponsors and partners. All ticket holders receive a drawing ticket and additional tickets are available to purchase. Must be present to win.",
-      location: "TOYOTA STAGE",
+      title: "SHOW ENDS",
+      description: "Awards will be given before the end of the show",
+      location: "Big Kid Custom Rides | Orem, UT",
     },
   ]
 
@@ -123,7 +53,7 @@ export default function SchedulePage() {
             Cars For A Cause 2025 • September 20th, 2025
           </p>
           <p className="text-lg text-white/80 max-w-3xl mx-auto drop-shadow-md">
-            Join us for a full day of activities, presentations, workshops, and competitions celebrating the custom car
+            Join us for a day of car shows, food, raffles, and kids games celebrating the custom car
             community.
           </p>
         </div>
