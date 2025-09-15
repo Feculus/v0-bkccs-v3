@@ -1,14 +1,23 @@
 import type { SupabaseClient } from "@supabase/supabase-js"
 import type { AdminAward } from "@/types/admin-awards"
 
-// Predefined special award categories
-export const SPECIAL_AWARD_CATEGORIES = [
-  "Most Original",
-  "Least Original",
-  "Rustiest Relic",
-  "XOverland - Spirit of Adventure Award",
-  "Best in Show",
-]
+// Function to fetch available award categories from the database
+export async function getAvailableAwardCategories(supabase: SupabaseClient): Promise<string[]> {
+  console.log("[v0] Fetching available award categories from database...")
+
+  const { data, error } = await supabase.from("admin_awards").select("category_name").order("category_name")
+
+  if (error) {
+    console.error("Error fetching award categories:", error)
+    throw new Error(`Failed to fetch award categories: ${error.message}`)
+  }
+
+  // Extract unique category names
+  const categories = [...new Set((data || []).map((award) => award.category_name))]
+  console.log("[v0] Found award categories:", categories)
+
+  return categories
+}
 
 export async function getAdminAwards(supabase: SupabaseClient): Promise<AdminAward[]> {
   console.log("[v0] Fetching admin awards...")
@@ -37,29 +46,7 @@ export async function getAdminAwards(supabase: SupabaseClient): Promise<AdminAwa
     throw new Error(`Failed to fetch admin awards: ${error.message}`)
   }
 
-  // Create a map of existing awards by category
-  const existingAwards = new Map((data || []).map((award) => [award.category_name, award]))
-
-  // Return all categories, with existing data or empty placeholders
-  return SPECIAL_AWARD_CATEGORIES.map((categoryName) => {
-    const existing = existingAwards.get(categoryName)
-    if (existing) {
-      return existing
-    }
-
-    // Return placeholder for categories that don't exist yet
-    return {
-      id: 0,
-      category_name: categoryName,
-      vehicle_id: null,
-      awarded_by: null,
-      awarded_at: new Date().toISOString(),
-      notes: null,
-      is_published: false,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    }
-  })
+  return data || []
 }
 
 export async function getPublishedAdminAwards(supabase: SupabaseClient): Promise<AdminAward[]> {

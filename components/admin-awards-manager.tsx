@@ -25,7 +25,7 @@ import {
   assignAdminAward,
   publishAdminAward,
   removeAdminAward,
-  SPECIAL_AWARD_CATEGORIES,
+  getAvailableAwardCategories,
   type AdminAward,
 } from "@/lib/admin-awards"
 import type { Vehicle } from "@/lib/types"
@@ -33,6 +33,7 @@ import type { Vehicle } from "@/lib/types"
 export function AdminAwardsManager() {
   const [awards, setAwards] = useState<AdminAward[]>([])
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
+  const [availableCategories, setAvailableCategories] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [supabase] = useState(() => createClient())
@@ -75,6 +76,10 @@ export function AdminAwardsManager() {
       const awardsData = await getAdminAwards(supabase)
       console.log("[v0] Loaded awards data:", awardsData)
       setAwards(awardsData)
+
+      const categoriesData = await getAvailableAwardCategories(supabase)
+      console.log("[v0] Loaded categories data:", categoriesData)
+      setAvailableCategories(categoriesData)
 
       // Load all active vehicles for selection
       const { data: vehiclesData, error: vehiclesError } = await supabase
@@ -240,7 +245,7 @@ export function AdminAwardsManager() {
                     <SelectValue placeholder="Select award category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {SPECIAL_AWARD_CATEGORIES.map((categoryName) => {
+                    {availableCategories.map((categoryName) => {
                       const existingAward = awards.find((a) => a.category_name === categoryName)
                       return (
                         <SelectItem key={categoryName} value={categoryName}>
