@@ -411,7 +411,7 @@ export default function HomePage() {
               </div>
               <h3 className="text-xl font-semibold text-bk-dark-gray mb-2">No Vehicles Registered Yet</h3>
               <p className="text-bk-dark-gray/60 mb-6">
-                Be the first to showcase your vehicle at the 2025 CRUISERFEST Show-N-Shine!
+                Be the first to showcase your vehicle at the 2025 Cars For A Cause Show!
               </p>
               <Button asChild className="bg-bk-bright-red hover:bg-bk-bright-red/90 text-white">
                 <Link href="/register">Register Your Vehicle</Link>
