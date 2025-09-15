@@ -9,48 +9,49 @@ import { Suspense } from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "2025 CRUISERFEST SHOW-N-SHINE",
+  title: "2025 Cars For A Cause | Big Kid's Custom Rides",
   description:
-    "The premier Land Cruiser showcase bringing together enthusiasts, collectors, and the most extraordinary vehicles from around the world. Register your vehicle for the 2025 CRUISERFEST Show-N-Shine.",
+    "Register your vehicle for the 2025 Cars For A Cause Show. Vote for your favorite vehicles, view results, and help raise funds for Tiny Tim's Foundation For Kids",
   keywords: [
+    "Cars For A Cause 2025",
     "car show",
-    "automotive showcase",
-    "vehicle registration",
-    "CRUISERFEST",
     "Show-N-Shine",
+    "vehicle registration",
+    "car show voting",
+    "Big Kid's Custom Rides",
     "classic cars",
-    "car enthusiasts",
     "automotive event",
-    "vehicle voting",
-    "car competition",
+    "car enthusiasts",
+    "vehicle competition",
   ],
-  authors: [{ name: "Land Cruiser Heritage Museum" }],
-  creator: "Land Cruiser Heritage Museum",
-  publisher: "Land Cruiser Heritage Museum",
+  authors: [{ name: "Big Kid's Custom Rides" }],
+  creator: "Ryan Berg",
+  publisher: "TALENTA Commerce",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://cruiserfest-show-n-shine.vercel.app",
-    siteName: "2025 CRUISERFEST SHOW-N-SHINE",
-    title: "2025 CRUISERFEST SHOW-N-SHINE",
+    url: "https://bkccs.vercel.app/",
+    siteName: "2025 Cars For A Cause",
+    title: "2025 Cars For A Cause | Register & Vote",
     description:
-      "The premier Land Cruiser showcase bringing together enthusiasts, collectors, and the most extraordinary vehicles from around the world. Register your vehicle for the 2025 CRUISERFEST Show-N-Shine.",
+      "Join the premier showcase event! Vote for your favorite vehicles, view results, and help raise funds for Tiny Tim's Foundation For Kids",
     images: [
       {
-        url: "https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/Green%20Cruiser.jpg",
+        url: "https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/bigkidcustomridesfinal10-21-20_FTYU.avif",
         width: 1200,
         height: 630,
-        alt: "2025 CRUISERFEST SHOW-N-SHINE - Classic green cruiser car",
+        alt: "2025 Cars For A Cause - Classic cars showcase event",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "2025 CRUISERFEST SHOW-N-SHINE",
+    title: "2025 Cars For A Cause | Register & Vote",
     description:
-      "The premier Land Cruiser showcase bringing together enthusiasts, collectors, and the most extraordinary vehicles from around the world.",
-    images: ["https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/Green%20Cruiser.jpg"],
-    creator: "@LandCruiserHeritage",
+      "Join the premier showcase event! Vote for your favorite vehicles, view results, and help raise funds for Tiny Tim's Foundation For Kids",
+    images: ["https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/bigkidcustomridesfinal10-21-20_FTYU.avif"],
+    creator: "Ryan Berg",
+    site: "https://bkccs.vercel.app/",
   },
   robots: {
     index: true,
@@ -64,12 +65,21 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "your-google-verification-code",
+    google: "",
   },
   alternates: {
-    canonical: "https://cruiserfest-show-n-shine.vercel.app",
+    canonical: "https://bkccs.vercel.app/",
   },
   category: "automotive",
+  applicationName: "Cars For A Cause",
+  referrer: "origin-when-cross-origin",
+  colorScheme: "light",
+  themeColor: "#BF6849",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
     generator: 'v0.app'
 }
 
@@ -81,29 +91,32 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/FavIcon.png" />
+        <link
+          rel="icon"
+          href="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Fav%20Icon.png"
+        />
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/FavIcon.png"
+          href="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Fav%20Icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/FavIcon.png"
+          href="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Fav%20Icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="https://l7krxsdfvx6sguxt.public.blob.vercel-storage.com/Site%20Images/FavIcon.png"
+          href="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Fav%20Icon.png"
         />
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#BF6849" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="CRUISERFEST 2025" />
+        <meta name="apple-mobile-web-app-title" content="2025 Cars For A Cause" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/browserconfig.xml" />

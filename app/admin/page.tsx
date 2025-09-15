@@ -82,7 +82,7 @@ export default function AdminPage() {
   const [closeDateTime, setCloseDateTime] = useState("")
   const [resultsPublishDateTime, setResultsPublishDateTime] = useState("")
   const [resultsPublishLoading, setResultsPublishLoading] = useState(false)
-  const [selectedTimezone, setSelectedTimezone] = useState("")
+  const [selectedTimezone, setSelectedTimezone] = useState("America/Denver")
 
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [pendingScheduleUpdate, setPendingScheduleUpdate] = useState<{
@@ -1150,9 +1150,9 @@ export default function AdminPage() {
 
   const getTimezoneOptions = () => {
     const timezones = [
+      "America/Denver",
       "America/New_York",
       "America/Chicago",
-      "America/Denver",
       "America/Los_Angeles",
       "America/Phoenix",
       "America/Anchorage",
@@ -1609,10 +1609,43 @@ export default function AdminPage() {
                 {/* Voting Schedule Management */}
                 <div className="p-4 border rounded-lg">
                   <h3 className="font-semibold mb-4">Voting Schedule</h3>
+
+                  <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                    <Label htmlFor="timezone-select" className="text-sm font-medium text-blue-900">
+                      Timezone (All times will be set in this timezone)
+                    </Label>
+                    <select
+                      id="timezone-select"
+                      value={selectedTimezone}
+                      onChange={(e) => setSelectedTimezone(e.target.value)}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                      {getTimezoneOptions().map((tz) => (
+                        <option key={tz} value={tz}>
+                          {tz} {tz === "America/Denver" ? "(MST/MDT - Default)" : ""}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-xs text-blue-700 mt-1">
+                      Current time in {selectedTimezone}:{" "}
+                      {new Date().toLocaleString("en-US", {
+                        timeZone: selectedTimezone,
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        timeZoneName: "short",
+                      })}
+                    </p>
+                  </div>
+
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="voting-opens">Voting Opens</Label>
+                        <Label htmlFor="voting-opens">
+                          Voting Opens ({selectedTimezone === "America/Denver" ? "MST/MDT" : selectedTimezone})
+                        </Label>
                         <Input
                           id="voting-opens"
                           type="datetime-local"
@@ -1621,7 +1654,9 @@ export default function AdminPage() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="voting-closes">Voting Closes</Label>
+                        <Label htmlFor="voting-closes">
+                          Voting Closes ({selectedTimezone === "America/Denver" ? "MST/MDT" : selectedTimezone})
+                        </Label>
                         <Input
                           id="voting-closes"
                           type="datetime-local"
@@ -1636,10 +1671,10 @@ export default function AdminPage() {
                       <div className="p-3 bg-blue-50 rounded-lg">
                         <p className="text-sm font-medium text-blue-900 mb-1">Current Schedule:</p>
                         <p className="text-sm text-blue-700">
-                          Opens: {new Date(votingSchedule.voting_opens_at).toLocaleString()}
+                          Opens: {formatDateInTimezone(votingSchedule.voting_opens_at)}
                         </p>
                         <p className="text-sm text-blue-700">
-                          Closes: {new Date(votingSchedule.voting_closes_at).toLocaleString()}
+                          Closes: {formatDateInTimezone(votingSchedule.voting_closes_at)}
                         </p>
                       </div>
                     ) : (
