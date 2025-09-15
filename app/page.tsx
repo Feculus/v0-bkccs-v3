@@ -252,21 +252,21 @@ export default function HomePage() {
             <div className="space-y-4">
               <Car className="h-16 w-16 text-bk-bright-red mx-auto" />
               <div>
-                <h3 className="text-4xl font-bold text-bk-dark-gray">50 MAX</h3>
+                <h3 className="text-4xl font-bold text-bk-dark-gray">100 MAX</h3>
                 <p className="text-bk-dark-gray/60 uppercase tracking-wide">VEHICLES</p>
               </div>
             </div>
             <div className="space-y-4">
               <Users className="h-16 w-16 text-bk-bright-red mx-auto" />
               <div>
-                <h3 className="text-4xl font-bold text-bk-dark-gray">LOCAL</h3>
+                <h3 className="text-4xl font-bold text-bk-dark-gray">LOCAL &amp; REGIONAL  </h3>
                 <p className="text-bk-dark-gray/60 uppercase tracking-wide">ATTENDEES</p>
               </div>
             </div>
             <div className="space-y-4">
               <Trophy className="h-16 w-16 text-bk-bright-red mx-auto" />
               <div>
-                <h3 className="text-4xl font-bold text-bk-dark-gray">5</h3>
+                <h3 className="text-4xl font-bold text-bk-dark-gray">{"6"}</h3>
                 <p className="text-bk-dark-gray/60 uppercase tracking-wide">AWARD CATEGORIES</p>
               </div>
             </div>
