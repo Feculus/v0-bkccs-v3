@@ -1318,7 +1318,8 @@ export default function AdminPage() {
                 <p className="text-sm text-[#3A403D]/60">Active Registrations</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-[#3A403D]">{50 - activeVehicleCount}</p>
+                <p className="text-2xl font-bold text-[#3A403D]">{100 - activeVehicleCount}</p>{" "}
+                {/* Updated calculation from 50 to 100 */}
                 <p className="text-sm text-[#3A403D]/60">Spots Remaining</p>
               </div>
               <div className="text-center">

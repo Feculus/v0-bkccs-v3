@@ -13,6 +13,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { createClient } from "@/utils/supabase/client"
+import SignatureCapture from "@/components/signature-capture"
 
 export default function RegisterPageClient() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function RegisterPageClient() {
   const [registrationClosed, setRegistrationClosed] = useState(false)
   const [currentCount, setCurrentCount] = useState<number | null>(null)
   const [checkingStatus, setCheckingStatus] = useState(true)
+  const [signature, setSignature] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -59,7 +61,7 @@ export default function RegisterPageClient() {
       }
 
       setCurrentCount(count)
-      setRegistrationClosed(count !== null && count >= 50)
+      setRegistrationClosed(count !== null && count >= 100)
     } catch (error) {
       console.error("Error checking registration status:", error)
     } finally {
@@ -100,7 +102,7 @@ export default function RegisterPageClient() {
     const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg"
     const fileName = `temp-${Date.now()}-${index}.${fileExt}`
 
-    console.log(`Uploading photo ${index + 1}: ${file.name} (${file.size} bytes)`)
+    console.log(`[v0] Uploading photo ${index + 1}: ${file.name} (${file.size} bytes)`)
 
     setUploadProgress((prev) => ({ ...prev, [index]: 0 }))
 
@@ -116,15 +118,32 @@ export default function RegisterPageClient() {
       setUploadProgress((prev) => ({ ...prev, [index]: 100 }))
 
       if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Upload failed: ${response.status} - ${errorText}`)
+        let errorMessage = `HTTP ${response.status}`
+
+        try {
+          // Clone the response to avoid consuming the stream
+          const responseClone = response.clone()
+          const errorData = await responseClone.json()
+          errorMessage = errorData.error || errorData.details || errorMessage
+          console.error(`[v0] Upload API error for photo ${index + 1}:`, errorData)
+        } catch (parseError) {
+          console.error(`[v0] Failed to parse JSON error response for photo ${index + 1}:`, parseError)
+          try {
+            const errorText = await response.text()
+            errorMessage = errorText || errorMessage
+            console.error(`[v0] Error text response for photo ${index + 1}:`, errorText)
+          } catch (textError) {
+            console.error(`[v0] Failed to parse text error response for photo ${index + 1}:`, textError)
+          }
+        }
+        throw new Error(`Upload failed: ${response.status} - ${errorMessage}`)
       }
 
       const result = await response.json()
-      console.log(`Photo ${index + 1} uploaded successfully:`, result.url)
+      console.log(`[v0] Photo ${index + 1} uploaded successfully:`, result.url)
       return result.url
     } catch (error) {
-      console.error(`Error uploading photo ${index + 1}:`, error)
+      console.error(`[v0] Error uploading photo ${index + 1}:`, error)
       throw error
     }
   }
@@ -147,6 +166,11 @@ export default function RegisterPageClient() {
 
       if (photos.length > 5) {
         setError("Maximum 5 photos allowed.")
+        return
+      }
+
+      if (!signature) {
+        setError("Please provide your signature to complete the registration.")
         return
       }
 
@@ -199,6 +223,7 @@ export default function RegisterPageClient() {
         year: Number.parseInt(formData.year),
         description: formData.description.trim() || undefined,
         photo_urls: photoUrls,
+        signature_data: signature, // Updated field name to match API expectation
       }
 
       console.log("Sending registration data:", registrationData)
@@ -392,13 +417,9 @@ export default function RegisterPageClient() {
   }
 
   const formatPhoneNumber = (value: string): string => {
-    // Remove all non-digits
     const digits = value.replace(/\D/g, "")
-
-    // Limit to 10 digits
     const limitedDigits = digits.slice(0, 10)
 
-    // Format as (XXX)-XXX-XXXX
     if (limitedDigits.length >= 6) {
       return `(${limitedDigits.slice(0, 3)})-${limitedDigits.slice(3, 6)}-${limitedDigits.slice(6)}`
     } else if (limitedDigits.length >= 3) {
@@ -461,8 +482,8 @@ export default function RegisterPageClient() {
               <Alert className="border-bk-bright-red bg-bk-bright-red/5">
                 <AlertCircle className="h-4 w-4 text-bk-bright-red" />
                 <AlertDescription className="text-bk-dark-gray">
-                  <strong>Registration is now closed.</strong> We have reached the maximum of 50 vehicle entries for the
-                  2025 Cars For A Cause.
+                  <strong>Registration is now closed.</strong> We have reached the maximum of 100 vehicle entries for
+                  the 2025 Cars For A Cause.
                 </AlertDescription>
               </Alert>
 
@@ -484,7 +505,7 @@ export default function RegisterPageClient() {
 
               <div className="text-sm text-bk-dark-gray/60">
                 <p>
-                  Total Registered Vehicles: <strong>{currentCount}/50</strong>
+                  Total Registered Vehicles: <strong>{currentCount}/100</strong>{" "}
                 </p>
                 <p className="mt-2">
                   For questions about the event, please contact the{" "}
@@ -530,9 +551,9 @@ export default function RegisterPageClient() {
             {currentCount !== null && (
               <div className="mt-4 p-3 bg-bk-light-gray rounded-lg">
                 <p className="text-sm font-medium text-bk-dark-gray">
-                  Registered Vehicles: <span className="text-bk-bright-red font-bold">{currentCount}/50</span>
-                  {currentCount >= 45 && currentCount < 50 && (
-                    <span className="text-bk-bright-red ml-2">• Only {50 - currentCount} spots remaining!</span>
+                  Registered Vehicles: <span className="text-bk-bright-red font-bold">{currentCount}/100</span>{" "}
+                  {currentCount >= 90 && currentCount < 100 && (
+                    <span className="text-bk-bright-red ml-2">• Only {100 - currentCount} spots remaining!</span>
                   )}
                 </p>
               </div>
@@ -794,6 +815,23 @@ export default function RegisterPageClient() {
                   {photos.length > 0 && (
                     <p className="text-sm text-bk-deep-red mt-2 font-semibold">{photos.length} photo(s) selected</p>
                   )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-bk-dark-gray border-b border-bk-bright-red pb-2">
+                  Liability Waiver & Signature *
+                </h3>
+
+                <div className="bg-bk-light-gray p-6 rounded-lg">
+                  <p className="text-sm text-bk-dark-gray leading-relaxed mb-4">
+                    By submitting this form, I release and discharge Cars for a Cause of any claims, lawsuits,
+                    liabilities, losses or actions from any known and/or unknown damages, injuries or losses, judgements
+                    and/or claims from any cause that may be suffered by any staff member, participant to his or her
+                    person or property while attending the event.
+                  </p>
+
+                  <SignatureCapture onSignatureChange={setSignature} required={true} />
                 </div>
               </div>
 

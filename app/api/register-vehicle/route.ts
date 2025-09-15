@@ -14,6 +14,7 @@ interface VehicleRegistrationData {
   category_id?: number
   description?: string
   photo_urls: string[]
+  signature_data?: string // Added signature data field
 }
 
 function sanitizeString(input: string): string {
@@ -72,13 +73,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     console.log(`Current active registration count: ${count}`)
 
-    if (count !== null && count >= 50) {
+    if (count !== null && count >= 100) {
+      // Updated limit from 50 to 100
       console.log("Registration limit reached - rejecting new registration")
       return NextResponse.json(
         {
           success: false,
           error:
-            "Registration is now closed. We have reached the maximum of 50 vehicle entries for the 2025 CRUISERFEST Show-N-Shine.",
+            "Registration is now closed. We have reached the maximum of 100 vehicle entries for the 2025 CRUISERFEST Show-N-Shine.", // Updated error message to reflect 100 limit
           registrationClosed: true,
         },
         { status: 400 },
@@ -101,6 +103,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       category_id: rawData.category_id ? Number.parseInt(rawData.category_id) : undefined,
       description: rawData.description ? sanitizeString(rawData.description) : undefined,
       photo_urls: Array.isArray(rawData.photo_urls) ? rawData.photo_urls.slice(0, 5) : [],
+      signature_data: rawData.signature_data || undefined, // Added signature data parsing
     }
 
     console.log("Parsed vehicle data:", vehicleData)
@@ -114,9 +117,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       !vehicleData.state ||
       !vehicleData.make ||
       !vehicleData.model ||
-      !vehicleData.year
+      !vehicleData.year ||
+      !vehicleData.signature_data // Added signature validation
     ) {
-      return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 })
+      return NextResponse.json(
+        { success: false, error: "Missing required fields including signature" },
+        { status: 400 },
+      )
     }
 
     if (!validateEmail(vehicleData.email)) {
@@ -197,6 +204,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       description: vehicleData.description || null,
       photos: vehicleData.photo_urls,
       profile_url: profileUrl,
+      signature_data: vehicleData.signature_data, // Added signature data to database insert
       // Set individual image URL columns
       image_1_url: vehicleData.photo_urls[0] || null,
       image_2_url: vehicleData.photo_urls[1] || null,
