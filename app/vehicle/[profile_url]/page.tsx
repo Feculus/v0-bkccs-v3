@@ -22,7 +22,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import { createClient } from "@/utils/supabase/client"
-import { getCurrentVote, getVoteCount } from "@/lib/vote-utils"
+import { getCurrentVote, getVoteCountsByCategory } from "@/lib/vote-utils"
 import type { Vehicle } from "@/lib/types"
 
 const supabase = createClient()
@@ -33,7 +33,9 @@ export default function VehicleProfilePage() {
   const [vehicle, setVehicle] = useState<Vehicle | null>(null)
   const [loading, setLoading] = useState(true)
   const [currentVote, setCurrentVote] = useState<any>(null)
-  const [voteCount, setVoteCount] = useState(0)
+  const [voteCountsByCategory, setVoteCountsByCategory] = useState<
+    Array<{ categoryId: number; categoryName: string; count: number }>
+  >([])
   const [error, setError] = useState<string | null>(null)
 
   // Image lightbox state
@@ -104,9 +106,14 @@ export default function VehicleProfilePage() {
 
       setVehicle(data)
 
-      // Load vote count
-      const count = await getVoteCount(data.id)
-      setVoteCount(count)
+      try {
+        const voteCounts = await getVoteCountsByCategory(data.id)
+        console.log("[v0] Vote counts by category:", voteCounts)
+        setVoteCountsByCategory(voteCounts)
+      } catch (error) {
+        console.error("Error getting vote count:", error)
+        setVoteCountsByCategory([])
+      }
     } catch (error) {
       console.error("Error loading vehicle:", error)
       setError("Failed to load vehicle")
@@ -211,6 +218,7 @@ export default function VehicleProfilePage() {
   const primaryImageUrl = getPrimaryImageUrl(vehicle)
   const hasAlreadyVoted = currentVote !== null
   const hasVotedForThisVehicle = currentVote && currentVote.vehicle_id === vehicle.id
+  const totalVotes = voteCountsByCategory.reduce((sum, category) => sum + category.count, 0)
 
   return (
     <div className="min-h-screen bg-[#F2EEEB] py-8">
@@ -299,7 +307,7 @@ export default function VehicleProfilePage() {
                   <Badge className="bg-[#BF6849] text-white text-lg px-4 py-2">#{vehicle.entry_number}</Badge>
                   <Badge variant="outline" className="border-[#BF6849] text-[#BF6849] text-lg px-4 py-2">
                     <Trophy className="h-4 w-4 mr-1" />
-                    Best in Show
+                    People's Choice
                   </Badge>
                 </div>
                 <CardTitle className="text-3xl font-bold text-[#3A403D]">
@@ -331,10 +339,20 @@ export default function VehicleProfilePage() {
                   </div>
                 )}
 
-                {/* Vote Count */}
-                <div className="flex items-center space-x-2 text-[#BF6849] font-semibold">
-                  <Heart className="h-5 w-5" />
-                  <span>{voteCount} votes</span>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2 text-[#BF6849] font-semibold">
+                    <Heart className="h-5 w-5" />
+                    <span>{totalVotes} total votes</span>
+                  </div>
+                  {voteCountsByCategory.length > 0 && (
+                    <div className="text-sm text-[#3A403D]/70 ml-7">
+                      {voteCountsByCategory.map((category, index) => (
+                        <div key={category.categoryId}>
+                          {category.categoryName}: {category.count} vote{category.count !== 1 ? "s" : ""}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -370,7 +388,6 @@ export default function VehicleProfilePage() {
                   </div>
                 </div>
 
-                {/* Voting Section */}
                 <div className="bg-gradient-to-r from-[#BF6849]/5 to-[#A9BF88]/5 border-2 border-[#BF6849]/20 rounded-lg p-6">
                   <div className="text-center">
                     {hasVotedForThisVehicle ? (
@@ -379,7 +396,7 @@ export default function VehicleProfilePage() {
                       <Trophy className="h-12 w-12 text-[#BF6849] mx-auto mb-4" />
                     )}
                     <h3 className="text-xl font-bold text-[#3A403D] mb-2">
-                      {hasVotedForThisVehicle ? "You Voted for This Vehicle!" : "Vote for Best in Show"}
+                      {hasVotedForThisVehicle ? "You Voted for This Vehicle!" : "Vote for People's Choice Award"}
                     </h3>
 
                     {hasVotedForThisVehicle ? (
@@ -389,22 +406,7 @@ export default function VehicleProfilePage() {
                           <AlertDescription>
                             <strong>Your vote is recorded!</strong>
                             <br />
-                            You have successfully voted for this vehicle as your Best in Show choice.
-                          </AlertDescription>
-                        </Alert>
-                        <Button asChild variant="outline" className="bg-transparent">
-                          <Link href="/vehicles">Browse Other Vehicles</Link>
-                        </Button>
-                      </div>
-                    ) : hasAlreadyVoted ? (
-                      <div>
-                        <Alert className="border-amber-500 bg-amber-50 mb-4">
-                          <Info className="h-4 w-4 text-amber-500" />
-                          <AlertDescription className="text-amber-700">
-                            <strong>You've already voted for Best in Show.</strong>
-                            <br />
-                            You cannot vote for this vehicle because you've already cast your vote. Votes cannot be
-                            changed.
+                            You have successfully voted for this vehicle in one or more categories.
                           </AlertDescription>
                         </Alert>
                         <Button asChild variant="outline" className="bg-transparent">
@@ -413,21 +415,16 @@ export default function VehicleProfilePage() {
                       </div>
                     ) : (
                       <div>
-                        <p className="text-[#3A403D]/80 mb-4">
-                          Vote for this amazing {vehicle.year} {vehicle.make} {vehicle.model} as your Best in Show
-                          choice!
-                        </p>
-                        <Alert className="border-blue-500 bg-blue-50 mb-4">
+                                                <Alert className="border-blue-500 bg-blue-50 mb-4">
                           <Info className="h-4 w-4 text-blue-500" />
                           <AlertDescription className="text-blue-700">
-                            <strong>Remember:</strong> You can only vote once for Best in Show and votes cannot be
-                            changed. Choose carefully!
+                            <strong>Voting Rules:</strong> You can vote one time in the people's choice category.
                           </AlertDescription>
                         </Alert>
                         <Button asChild className="bg-[#BF6849] hover:bg-[#BF6849]/90 text-white px-8 py-3">
                           <Link href={`/vote?vehicle=${vehicle.id}`}>
                             <Trophy className="h-5 w-5 mr-2" />
-                            Vote for Best in Show (Final)
+                            Vote This Vechicle For People's Choice Award
                           </Link>
                         </Button>
                       </div>

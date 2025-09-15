@@ -77,7 +77,7 @@ export default function AdminLoginPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-[#3A403D]">Admin Login</CardTitle>
             <CardDescription className="text-[#3A403D]/60">
-              Sign in to access the CRUISERFEST Show-N-Shine admin dashboard
+              Sign in to access the admin dashboard
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -17,6 +17,7 @@ import { getResultsPublicationStatus, checkAndUpdateScheduledPublication } from 
 import type { Vehicle } from "@/lib/types"
 
 const supabase = createClient()
+const PEOPLES_CHOICE_CATEGORY_ID = 28
 
 export default function VotePage() {
   const router = useRouter()
@@ -41,10 +42,10 @@ export default function VotePage() {
     }
   }, [vehicleId])
 
-  // Refresh vote count when voting status changes
   useEffect(() => {
     if (votingStatus !== "loading" && vehicleId) {
       refreshVoteCount()
+      checkCurrentVote()
     }
   }, [votingStatus, vehicleId])
 
@@ -74,7 +75,7 @@ export default function VotePage() {
       // Load the vehicle being voted for
       const { data: vehicleData, error: vehicleError } = await supabase
         .from("vehicles")
-        .select("*")
+        .select("*, category:categories(*)")
         .eq("id", vehicleId)
         .neq("status", "archived")
         .single()
@@ -84,8 +85,16 @@ export default function VotePage() {
         throw new Error(`Vehicle not found: ${vehicleError.message}`)
       }
       setVehicle(vehicleData)
+    } catch (error) {
+      console.error("Error loading vote data:", error)
+      setError(error instanceof Error ? error.message : "Failed to load voting data. Please try again.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
-      // Check if user has already voted
+  const checkCurrentVote = async () => {
+    try {
       const existingVote = await getCurrentVote()
       setCurrentVote(existingVote)
 
@@ -98,25 +107,19 @@ export default function VotePage() {
           .single()
 
         setCurrentVotedVehicle(votedVehicleData)
+      } else {
+        setCurrentVotedVehicle(null)
       }
-
-      // Load vote count for the current vehicle
-      const count = await getVoteCount(Number(vehicleId))
-      setVoteCount(count)
     } catch (error) {
-      console.error("Error loading vote data:", error)
-      setError(error instanceof Error ? error.message : "Failed to load voting data. Please try again.")
-    } finally {
-      setLoading(false)
+      console.error("Error checking current vote:", error)
     }
   }
 
-  // Added function to refresh vote count for real-time updates
   const refreshVoteCount = async () => {
     if (!vehicleId) return
 
     try {
-      const count = await getVoteCount(Number(vehicleId))
+      const count = await getVoteCount(Number(vehicleId), PEOPLES_CHOICE_CATEGORY_ID)
       setVoteCount(count)
     } catch (error) {
       console.error("Error refreshing vote count:", error)
@@ -130,9 +133,9 @@ export default function VotePage() {
       setSubmitting(true)
       setError(null)
 
-      console.log("Submitting vote for vehicle:", vehicleId)
+      console.log("Submitting vote for vehicle:", vehicleId, "in People's Choice category")
 
-      const result = await castVote(Number(vehicleId))
+      const result = await castVote(Number(vehicleId), PEOPLES_CHOICE_CATEGORY_ID)
 
       console.log("Vote result:", result)
 
@@ -140,7 +143,6 @@ export default function VotePage() {
         // Refresh the data to show the updated state
         await loadData()
 
-        // Redirect to success page
         router.push(`/vote/success?vehicle=${vehicleId}`)
       } else {
         setError(result.error || "Failed to submit vote. Please try again.")
@@ -251,7 +253,7 @@ export default function VotePage() {
                 <Badge className="bg-bk-bright-red text-white">#{vehicle.entry_number}</Badge>
                 <Badge variant="outline" className="border-bk-bright-red text-bk-bright-red">
                   <Trophy className="h-3 w-3 mr-1" />
-                  Best in Show
+                  People's Choice
                 </Badge>
               </div>
               <h2 className="text-2xl font-bold text-bk-dark-gray mb-2">
@@ -291,17 +293,9 @@ export default function VotePage() {
                     ? "Voting Not Yet Open"
                     : hasAlreadyVoted
                       ? "You've Already Voted!"
-                      : "Vote for Best in Show"}
+                      : "Cast Your Vote"}
               </CardTitle>
-              <CardDescription>
-                {votingStatus === "ended"
-                  ? "Thank you for participating in the 2025 CRUISERFEST Show-N-Shine!"
-                  : votingStatus === "closed"
-                    ? "Voting will open soon. Check back later!"
-                    : hasAlreadyVoted
-                      ? "You've already cast your vote for Best in Show."
-                      : "You're about to vote for this vehicle as Best in Show."}
-              </CardDescription>
+              
             </CardHeader>
             <CardContent className="space-y-6">
               {votingStatus === "closed" && votingSchedule && (
@@ -324,13 +318,13 @@ export default function VotePage() {
                 <Alert className="border-bk-deep-red bg-bk-deep-red/5">
                   <Lock className="h-4 w-4 text-bk-deep-red" />
                   <AlertDescription>
-                    <strong>Your Best in Show vote:</strong>
+                    <strong>Your People's Choice vote:</strong>
                     <br />
                     {currentVotedVehicle.year} {currentVotedVehicle.make} {currentVotedVehicle.model} by{" "}
                     {currentVotedVehicle.full_name}
                     <br />
                     <br />
-                    <strong>You cannot change your vote.</strong> Each voter can only vote once for Best in Show.
+                    <strong>You cannot change your vote.</strong> Each voter can only vote once.
                   </AlertDescription>
                 </Alert>
               )}
@@ -342,7 +336,7 @@ export default function VotePage() {
                   <AlertDescription>
                     <strong>You've already voted for this vehicle!</strong>
                     <br />
-                    Your vote is recorded and counts toward this vehicle's Best in Show total.
+                    Your vote is recorded and counts toward this vehicle's People's Choice total.
                   </AlertDescription>
                 </Alert>
               )}
@@ -355,73 +349,34 @@ export default function VotePage() {
                 </Alert>
               )}
 
-              {/* Voting Rules - only show when voting is open */}
               {votingStatus === "open" && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-bk-dark-gray mb-2">Best in Show Voting Rules</h4>
-                  <ul className="text-sm text-bk-dark-gray/80 space-y-1">
-                    <li>• You can vote once for Best in Show</li>
-                    <li>• Votes cannot be changed once submitted</li>
-                    <li>• Your vote is anonymous and secure</li>
-                    <li>• Choose carefully - your vote is final!</li>
-                    <li>• All vehicles compete for the same award</li>
-                  </ul>
-                </div>
-              )}
+                <>
+                  <Alert className="border-amber-500 bg-amber-50">
+                    <AlertCircle className="h-4 w-4 text-amber-500" />
+                    <AlertDescription className="text-amber-700">
+                      <strong>Important:</strong> Your vote is not counted until you confirm by clicking the vote button below!
+                    </AlertDescription>
+                  </Alert>
 
-              {/* Action Buttons */}
-              <div className="space-y-4">
-                {votingStatus === "open" && hasAlreadyVoted ? (
-                  <div className="text-center py-4">
-                    <div className="w-16 h-16 bg-bk-deep-red rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Lock className="h-8 w-8 text-white" />
-                    </div>
-                    <p className="text-bk-deep-red font-semibold mb-2">Voting Complete</p>
-                    <p className="text-bk-dark-gray/60 text-sm mb-4">
-                      You have already voted for Best in Show. Votes cannot be changed.
-                    </p>
-                    <Button asChild variant="outline" className="w-full bg-transparent">
-                      <Link href="/vehicles">Browse Other Vehicles</Link>
-                    </Button>
-                  </div>
-                ) : votingStatus === "open" && !hasAlreadyVoted ? (
-                  <>
-                    <Alert className="border-amber-500 bg-amber-50">
-                      <AlertCircle className="h-4 w-4 text-amber-500" />
-                      <AlertDescription className="text-amber-700">
-                        <strong>Important:</strong> Once you vote, you cannot change your selection. Make sure this is
-                        the vehicle you want to vote for as Best in Show.
-                      </AlertDescription>
-                    </Alert>
-
-                    <Button
-                      onClick={handleVote}
-                      disabled={submitting}
-                      className="w-full bg-bk-bright-red hover:bg-bk-bright-red/90 text-white py-3"
-                    >
-                      {submitting ? (
-                        <div className="flex items-center">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Casting Vote...
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          <Trophy className="h-4 w-4 mr-2" />
-                          Vote for Best in Show (Final)
-                        </div>
-                      )}
-                    </Button>
-
-                    <Button asChild variant="outline" className="w-full bg-transparent">
-                      <Link href="/vehicles">Cancel & Browse Vehicles</Link>
-                    </Button>
-                  </>
-                ) : (
-                  <Button asChild variant="outline" className="w-full bg-transparent">
-                    <Link href="/vehicles">Browse Vehicles</Link>
+                  <Button
+                    onClick={handleVote}
+                    disabled={submitting}
+                    className="w-full bg-bk-bright-red hover:bg-bk-bright-red/90 text-white py-3"
+                  >
+                    {submitting ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Casting Vote...
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <Trophy className="h-4 w-4 mr-2" />
+                        Vote for People's Choice (Final)
+                      </div>
+                    )}
                   </Button>
-                )}
-              </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>

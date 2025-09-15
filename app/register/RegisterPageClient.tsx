@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { createClient } from "@/utils/supabase/client"
 import SignatureCapture from "@/components/signature-capture"
+import type { Category } from "@/lib/types"
 
 export default function RegisterPageClient() {
   const router = useRouter()
@@ -25,6 +26,8 @@ export default function RegisterPageClient() {
   const [currentCount, setCurrentCount] = useState<number | null>(null)
   const [checkingStatus, setCheckingStatus] = useState(true)
   const [signature, setSignature] = useState<string | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
 
   const [formData, setFormData] = useState({
     first_name: "",
@@ -121,21 +124,24 @@ export default function RegisterPageClient() {
         let errorMessage = `HTTP ${response.status}`
 
         try {
-          // Clone the response to avoid consuming the stream
-          const responseClone = response.clone()
-          const errorData = await responseClone.json()
-          errorMessage = errorData.error || errorData.details || errorMessage
-          console.error(`[v0] Upload API error for photo ${index + 1}:`, errorData)
-        } catch (parseError) {
-          console.error(`[v0] Failed to parse JSON error response for photo ${index + 1}:`, parseError)
-          try {
+          const contentType = response.headers.get("content-type")
+          console.log(`[v0] Response content-type for photo ${index + 1}:`, contentType)
+
+          if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json()
+            errorMessage = errorData.error || errorData.message || errorData.details || errorMessage
+            console.error(`[v0] Upload API error for photo ${index + 1}:`, errorData)
+          } else {
+            // Handle HTML error responses (like "Internal server error")
             const errorText = await response.text()
             errorMessage = errorText || errorMessage
-            console.error(`[v0] Error text response for photo ${index + 1}:`, errorText)
-          } catch (textError) {
-            console.error(`[v0] Failed to parse text error response for photo ${index + 1}:`, textError)
+            console.error(`[v0] Non-JSON error response for photo ${index + 1}:`, errorText)
           }
+        } catch (parseError) {
+          console.error(`[v0] Failed to parse error response for photo ${index + 1}:`, parseError)
+          errorMessage = `Server error (${response.status})`
         }
+
         throw new Error(`Upload failed: ${response.status} - ${errorMessage}`)
       }
 
@@ -223,7 +229,8 @@ export default function RegisterPageClient() {
         year: Number.parseInt(formData.year),
         description: formData.description.trim() || undefined,
         photo_urls: photoUrls,
-        signature_data: signature, // Updated field name to match API expectation
+        signature_data: signature,
+        category_id: 28, // Hardcoded to People's Choice category ID
       }
 
       console.log("Sending registration data:", registrationData)
@@ -545,7 +552,7 @@ export default function RegisterPageClient() {
               <CardTitle className="text-3xl font-bold text-bk-dark-gray">Vehicle Registration</CardTitle>
             </div>
             <CardDescription className="text-bk-dark-gray/60">
-              Register your vehicle for the 2025 Cars For A Cuase Best in Show competition. All fields marked with * are
+              Register your vehicle for the 2025 Cars For A Cause Best in Show competition. All fields marked with * are
               required.
             </CardDescription>
             {currentCount !== null && (
@@ -737,6 +744,7 @@ export default function RegisterPageClient() {
                     />
                   </div>
                 </div>
+
                 <div>
                   <Label htmlFor="description">Vehicle Description</Label>
                   <Textarea
@@ -746,6 +754,10 @@ export default function RegisterPageClient() {
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="border-bk-dark-gray/20 focus:border-bk-bright-red min-h-[100px]"
                   />
+                  <p className="text-sm text-bk-dark-gray/60 mt-1">
+                    All vehicles are automatically registered in the "People's Choice" category where attendees will
+                    vote for their favorite.
+                  </p>
                 </div>
               </div>
 

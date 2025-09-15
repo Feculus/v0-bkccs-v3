@@ -1,112 +1,115 @@
 import { put } from "@vercel/blob"
 import { type NextRequest, NextResponse } from "next/server"
-import sharp from "sharp"
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const { searchParams } = new URL(request.url)
-  const filename = searchParams.get("filename")
-
-  console.log("[v0] Upload API called with filename:", filename)
-  console.log("[v0] Request headers:", Object.fromEntries(request.headers.entries()))
-
-  if (!filename) {
-    console.error("[v0] No filename provided")
-    return NextResponse.json({ error: "Filename is required" }, { status: 400 })
-  }
-
-  // Sanitize filename to prevent path traversal attacks
-  const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_").substring(0, 100)
-  if (sanitizedFilename !== filename) {
-    console.error("[v0] Invalid filename provided:", filename)
-    return NextResponse.json({ error: "Invalid filename format" }, { status: 400 })
-  }
-
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.error("[v0] BLOB_READ_WRITE_TOKEN is not set")
-    return NextResponse.json({ error: "Storage not configured" }, { status: 500 })
-  }
+  console.log("[v0] Upload API: Starting request processing")
 
   try {
-    console.log("[v0] Getting file blob from request...")
+    const { searchParams } = new URL(request.url)
+    const filename = searchParams.get("filename")
+    console.log("[v0] Upload API: Filename received:", filename)
+
+    if (!filename) {
+      console.log("[v0] Upload API: No filename provided")
+      return NextResponse.json({ error: "Filename is required" }, { status: 400 })
+    }
+
+    // Sanitize filename to prevent path traversal attacks
+    const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_").substring(0, 100)
+    if (sanitizedFilename !== filename) {
+      console.log("[v0] Upload API: Invalid filename format")
+      return NextResponse.json({ error: "Invalid filename format" }, { status: 400 })
+    }
+
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      console.log("[v0] Upload API: No blob token configured")
+      return NextResponse.json({ error: "Storage not configured" }, { status: 500 })
+    }
+
+    console.log("[v0] Upload API: Getting file blob from request")
     // Get the file as a blob from the request
     const fileBlob = await request.blob()
-    console.log("[v0] File blob received:", { size: fileBlob.size, type: fileBlob.type })
+    console.log("[v0] Upload API: File blob received, size:", fileBlob.size, "type:", fileBlob.type)
 
     if (!fileBlob || fileBlob.size === 0) {
-      console.error("[v0] No file data received")
+      console.log("[v0] Upload API: No file data received")
       return NextResponse.json({ error: "No file data received" }, { status: 400 })
     }
 
     const maxFileSize = 10 * 1024 * 1024 // 10MB limit
     if (fileBlob.size > maxFileSize) {
-      console.error("[v0] File too large:", fileBlob.size)
+      console.log("[v0] Upload API: File size exceeds limit")
       return NextResponse.json({ error: "File size exceeds 10MB limit" }, { status: 400 })
     }
 
     // Validate file type
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
     if (!allowedTypes.includes(fileBlob.type)) {
-      console.error("[v0] Invalid file type:", fileBlob.type)
+      console.log("[v0] Upload API: Invalid file type:", fileBlob.type)
       return NextResponse.json({ error: "Only JPEG, PNG, and WebP images are allowed" }, { status: 400 })
     }
 
-    console.log(`[v0] Processing upload: ${sanitizedFilename}`)
-    console.log(`[v0] Original file size: ${fileBlob.size} bytes`)
-    console.log(`[v0] Original file type: ${fileBlob.type}`)
+    console.log("[v0] Upload API: Creating File object for blob upload")
+    const file = new File([fileBlob], sanitizedFilename, { type: fileBlob.type })
+    console.log("[v0] Upload API: File object created, size:", file.size)
 
-    console.log("[v0] Converting to buffer...")
-    const imageBuffer = Buffer.from(await fileBlob.arrayBuffer())
-    console.log("[v0] Buffer created, size:", imageBuffer.length)
-
-    console.log("[v0] Starting Sharp conversion to WebP...")
-    // Convert to WebP with high quality (85%) for optimal balance of size and quality
-    const webpBuffer = await sharp(imageBuffer).webp({ quality: 85, effort: 4 }).toBuffer()
-    console.log("[v0] Sharp conversion completed")
-
-    // Update filename to have .webp extension
-    const webpFilename = sanitizedFilename.replace(/\.(jpe?g|png|webp)$/i, ".webp")
-
-    console.log(`[v0] Converted to WebP: ${webpFilename}`)
-    console.log(
-      `[v0] WebP file size: ${webpBuffer.length} bytes (${Math.round((1 - webpBuffer.length / fileBlob.size) * 100)}% reduction)`,
-    )
-
-    // Upload the converted WebP image to Vercel Blob
-    console.log("[v0] Attempting blob upload...")
-    const blob = await put(`vehicle-photos/${webpFilename}`, webpBuffer, {
+    console.log("[v0] Upload API: Starting blob upload to:", `vehicle-photos/${sanitizedFilename}`)
+    const blob = await put(`vehicle-photos/${sanitizedFilename}`, file, {
       access: "public",
       addRandomSuffix: true,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-      contentType: "image/webp", // Set correct content type for WebP
     })
+    console.log("[v0] Upload API: Blob upload completed:", blob.url)
 
-    console.log(`[v0] Upload successful:`, {
-      url: blob.url,
-      pathname: blob.pathname,
-      size: blob.size,
-    })
-
-    return NextResponse.json({
+    const response = {
       url: blob.url,
       pathname: blob.pathname,
       size: blob.size,
       downloadUrl: blob.downloadUrl,
       originalSize: fileBlob.size,
-      compressedSize: webpBuffer.length,
-      compressionRatio: Math.round((1 - webpBuffer.length / fileBlob.size) * 100),
-    })
-  } catch (error) {
-    console.error("[v0] Upload error details:", error)
-    console.error("[v0] Error stack:", error instanceof Error ? error.stack : "No stack trace")
+      compressedSize: file.size,
+      compressionRatio: 0, // No compression without Sharp
+    }
 
-    const errorMessage = error instanceof Error ? error.message : "Unknown upload error"
-    return NextResponse.json(
-      {
-        error: "Upload failed",
-        details: errorMessage,
-        timestamp: new Date().toISOString(),
+    console.log("[v0] Upload API: Returning success response")
+    return NextResponse.json(response)
+  } catch (error) {
+    console.error("[v0] Upload API: Caught error:", error)
+    console.error("[v0] Upload API: Error stack:", error instanceof Error ? error.stack : "No stack trace")
+
+    let errorMessage = "Unknown upload error"
+    let errorDetails = ""
+
+    if (error instanceof Error) {
+      errorMessage = error.message
+      errorDetails = error.name
+      console.log("[v0] Upload API: Error details - name:", error.name, "message:", error.message)
+
+      if (error.message.includes("blob") || error.message.includes("storage") || error.message.includes("put")) {
+        errorMessage = "Storage upload failed"
+        errorDetails = "Unable to save image to storage - check blob configuration"
+      } else if (error.message.includes("token") || error.message.includes("unauthorized")) {
+        errorMessage = "Storage authentication failed"
+        errorDetails = "Storage service is not properly configured"
+      } else if (error.message.includes("fetch") || error.message.includes("network")) {
+        errorMessage = "Network error during upload"
+        errorDetails = "Please check your internet connection and try again"
+      }
+    }
+
+    // Always return a proper JSON response
+    const errorResponse = {
+      error: "Upload failed",
+      message: errorMessage,
+      details: errorDetails,
+      timestamp: new Date().toISOString(),
+    }
+
+    console.log("[v0] Upload API: Returning error response:", errorMessage)
+    return NextResponse.json(errorResponse, {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
       },
-      { status: 500 },
-    )
+    })
   }
 }

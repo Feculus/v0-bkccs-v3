@@ -200,7 +200,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       make: vehicleData.make,
       model: vehicleData.model,
       year: vehicleData.year,
-      category_id: 25,
+      category_id: vehicleData.category_id || 25, // Default to 25 if no category selected
       description: vehicleData.description || null,
       photos: vehicleData.photo_urls,
       profile_url: profileUrl,

@@ -244,17 +244,17 @@ export class VoterTracker {
 
     try {
       // Method 1: localStorage
-      localStorage.setItem(`vote_${categoryId}`, JSON.stringify(voteData))
+      localStorage.setItem(`vote_category_${categoryId}`, JSON.stringify(voteData))
 
       // Method 2: sessionStorage
-      sessionStorage.setItem(`vote_${categoryId}`, JSON.stringify(voteData))
+      sessionStorage.setItem(`vote_category_${categoryId}`, JSON.stringify(voteData))
 
       // Method 3: IndexedDB (more persistent)
-      await this.storeInIndexedDB(`vote_${categoryId}`, voteData)
+      await this.storeInIndexedDB(`vote_category_${categoryId}`, voteData)
 
       // Method 4: Store in a cookie (with expiration)
       const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-      document.cookie = `vote_${categoryId}=${fingerprint}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`
+      document.cookie = `vote_category_${categoryId}=${fingerprint}; expires=${expires.toUTCString()}; path=/; SameSite=Strict`
     } catch (error) {
       console.warn("Error storing voter session:", error)
     }
@@ -283,7 +283,7 @@ export class VoterTracker {
 
   private checkLocalStorage(categoryId: number, fingerprint: string): boolean {
     try {
-      const stored = localStorage.getItem(`vote_${categoryId}`)
+      const stored = localStorage.getItem(`vote_category_${categoryId}`)
       if (!stored) return false
 
       const data = JSON.parse(stored)
@@ -295,7 +295,7 @@ export class VoterTracker {
 
   private checkSessionStorage(categoryId: number, fingerprint: string): boolean {
     try {
-      const stored = sessionStorage.getItem(`vote_${categoryId}`)
+      const stored = sessionStorage.getItem(`vote_category_${categoryId}`)
       if (!stored) return false
 
       const data = JSON.parse(stored)
@@ -307,7 +307,7 @@ export class VoterTracker {
 
   private async checkIndexedDB(categoryId: number, fingerprint: string): Promise<boolean> {
     try {
-      const data = await this.getFromIndexedDB(`vote_${categoryId}`)
+      const data = await this.getFromIndexedDB(`vote_category_${categoryId}`)
       return data?.fingerprint === fingerprint
     } catch {
       return false
@@ -317,7 +317,7 @@ export class VoterTracker {
   private checkCookie(categoryId: number, fingerprint: string): boolean {
     try {
       const cookies = document.cookie.split(";")
-      const voteCookie = cookies.find((cookie) => cookie.trim().startsWith(`vote_${categoryId}=`))
+      const voteCookie = cookies.find((cookie) => cookie.trim().startsWith(`vote_category_${categoryId}=`))
 
       if (!voteCookie) return false
 
@@ -389,41 +389,130 @@ export class VoterTracker {
   }
 
   // Clear all voting data (for testing)
-  async clearVotingData(): Promise<void> {
+  async clearVotingData(categoryId?: number): Promise<void> {
     try {
-      // Clear localStorage
-      Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith("vote_")) {
-          localStorage.removeItem(key)
-        }
-      })
+      if (categoryId) {
+        // Clear data for specific category
+        localStorage.removeItem(`vote_category_${categoryId}`)
+        sessionStorage.removeItem(`vote_category_${categoryId}`)
 
-      // Clear sessionStorage
-      Object.keys(sessionStorage).forEach((key) => {
-        if (key.startsWith("vote_")) {
-          sessionStorage.removeItem(key)
-        }
-      })
+        // Clear specific category cookie
+        document.cookie = `vote_category_${categoryId}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
 
-      // Clear cookies
-      document.cookie.split(";").forEach((cookie) => {
-        const key = cookie.split("=")[0].trim()
-        if (key.startsWith("vote_")) {
-          document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-        }
-      })
+        // Clear from IndexedDB
+        await this.removeFromIndexedDB(`vote_category_${categoryId}`)
+      } else {
+        // Clear all voting data
+        // Clear localStorage
+        Object.keys(localStorage).forEach((key) => {
+          if (key.startsWith("vote_category_")) {
+            localStorage.removeItem(key)
+          }
+        })
 
-      // Clear IndexedDB
-      const request = indexedDB.deleteDatabase("CruiserfestVotes")
-      await new Promise((resolve, reject) => {
-        request.onsuccess = () => resolve(undefined)
-        request.onerror = () => reject(request.error)
-      })
+        // Clear sessionStorage
+        Object.keys(sessionStorage).forEach((key) => {
+          if (key.startsWith("vote_category_")) {
+            sessionStorage.removeItem(key)
+          }
+        })
 
-      this.fingerprint = null
+        // Clear cookies
+        document.cookie.split(";").forEach((cookie) => {
+          const key = cookie.split("=")[0].trim()
+          if (key.startsWith("vote_category_")) {
+            document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+          }
+        })
+
+        // Clear IndexedDB
+        const request = indexedDB.deleteDatabase("CruiserfestVotes")
+        await new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(undefined)
+          request.onerror = () => reject(request.error)
+        })
+
+        this.fingerprint = null
+      }
     } catch (error) {
       console.warn("Error clearing voting data:", error)
     }
+  }
+
+  private async removeFromIndexedDB(key: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open("CruiserfestVotes", 1)
+
+      request.onerror = () => reject(request.error)
+
+      request.onsuccess = () => {
+        const db = request.result
+        const transaction = db.transaction(["votes"], "readwrite")
+        const store = transaction.objectStore("votes")
+
+        store.delete(key)
+
+        transaction.oncomplete = () => resolve()
+        transaction.onerror = () => reject(transaction.error)
+      }
+
+      request.onupgradeneeded = () => {
+        const db = request.result
+        if (!db.objectStoreNames.contains("votes")) {
+          db.createObjectStore("votes", { keyPath: "key" })
+        }
+      }
+    })
+  }
+
+  // Get all categories the user has voted in
+  async getVotedCategories(): Promise<number[]> {
+    const fingerprint = await this.generateFingerprint()
+    const votedCategories: number[] = []
+
+    try {
+      // Check localStorage for all vote_category_* keys
+      Object.keys(localStorage).forEach((key) => {
+        if (key.startsWith("vote_category_")) {
+          try {
+            const stored = localStorage.getItem(key)
+            if (stored) {
+              const data = JSON.parse(stored)
+              if (data.fingerprint === fingerprint) {
+                const categoryId = Number.parseInt(key.replace("vote_category_", ""))
+                if (!isNaN(categoryId)) {
+                  votedCategories.push(categoryId)
+                }
+              }
+            }
+          } catch (error) {
+            console.warn("Error parsing stored vote data:", error)
+          }
+        }
+      })
+
+      // Also check cookies as backup
+      document.cookie.split(";").forEach((cookie) => {
+        const trimmed = cookie.trim()
+        if (trimmed.startsWith("vote_category_")) {
+          try {
+            const [key, value] = trimmed.split("=")
+            if (value === fingerprint) {
+              const categoryId = Number.parseInt(key.replace("vote_category_", ""))
+              if (!isNaN(categoryId) && !votedCategories.includes(categoryId)) {
+                votedCategories.push(categoryId)
+              }
+            }
+          } catch (error) {
+            console.warn("Error parsing cookie vote data:", error)
+          }
+        }
+      })
+    } catch (error) {
+      console.warn("Error getting voted categories:", error)
+    }
+
+    return votedCategories
   }
 }
 

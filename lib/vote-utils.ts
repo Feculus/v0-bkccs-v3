@@ -11,6 +11,7 @@ export interface VoteResult {
 export interface CurrentVote {
   id: number
   vehicle_id: number
+  category_id: number
   voter_ip: string
   voter_session: string
   created_at: string
@@ -25,9 +26,13 @@ export interface CurrentVote {
     city?: string
     state?: string
   }
+  category?: {
+    id: number
+    name: string
+    description?: string
+  }
 }
 
-// Get the current user's vote (since there's only one vote per user now)
 export async function getCurrentVote(): Promise<CurrentVote | null> {
   const supabase = createClient()
 
@@ -43,7 +48,8 @@ export async function getCurrentVote(): Promise<CurrentVote | null> {
       .from("votes")
       .select(`
         *,
-        vehicles!votes_vehicle_id_fkey(id, entry_number, make, model, year, full_name)
+        vehicles!votes_vehicle_id_fkey(id, entry_number, make, model, year, full_name, city, state),
+        categories!votes_category_id_fkey(id, name, description)
       `)
       .eq("voter_session", voterFingerprint)
       .maybeSingle()
@@ -58,6 +64,7 @@ export async function getCurrentVote(): Promise<CurrentVote | null> {
       ? {
           ...data,
           vehicle: data.vehicles,
+          category: data.categories,
         }
       : null
   } catch (error) {
@@ -66,8 +73,7 @@ export async function getCurrentVote(): Promise<CurrentVote | null> {
   }
 }
 
-// Cast a new vote (only if user hasn't voted yet)
-export async function castVote(vehicleId: number): Promise<VoteResult> {
+export async function castVote(vehicleId: number, categoryId: number): Promise<VoteResult> {
   const supabase = createClient()
 
   try {
@@ -76,13 +82,13 @@ export async function castVote(vehicleId: number): Promise<VoteResult> {
 
     console.log("Attempting to cast vote:", {
       vehicleId,
+      categoryId,
       voterFingerprint: voterFingerprint.substring(0, 10) + "...",
     })
 
-    // First, check if a vote already exists for this voter
     const { data: existingVote, error: fetchError } = await supabase
       .from("votes")
-      .select("id, vehicle_id")
+      .select("id, vehicle_id, category_id")
       .eq("voter_session", voterFingerprint)
       .maybeSingle()
 
@@ -96,13 +102,12 @@ export async function castVote(vehicleId: number): Promise<VoteResult> {
     }
 
     if (existingVote) {
-      // User has already voted - don't allow another vote
       console.log("User has already voted:", existingVote.id)
       return {
         success: false,
         action: "already_voted",
         voteId: existingVote.id,
-        error: "You have already voted for Best in Show. Each voter can only vote once.",
+        error: "You have already voted. Each voter can only vote once.",
       }
     }
 
@@ -115,7 +120,7 @@ export async function castVote(vehicleId: number): Promise<VoteResult> {
         vehicle_id: vehicleId,
         voter_ip: voterFingerprint, // Using fingerprint as IP for consistency
         voter_session: voterFingerprint,
-        category_id: 25, // Best of Show category
+        category_id: categoryId,
       })
       .select("id")
       .single()
@@ -129,7 +134,7 @@ export async function castVote(vehicleId: number): Promise<VoteResult> {
         return {
           success: false,
           action: "already_voted",
-          error: "You have already voted for Best in Show. Each voter can only vote once.",
+          error: "You have already voted. Each voter can only vote once.",
         }
       }
 
@@ -164,8 +169,7 @@ export async function castVote(vehicleId: number): Promise<VoteResult> {
   }
 }
 
-// Get vote count for a specific vehicle
-export async function getVoteCount(vehicleId: number): Promise<number> {
+export async function getVoteCount(vehicleId: number, categoryId: number): Promise<number> {
   const supabase = createClient()
 
   try {
@@ -173,7 +177,7 @@ export async function getVoteCount(vehicleId: number): Promise<number> {
       .from("votes")
       .select("*", { count: "exact", head: true })
       .eq("vehicle_id", vehicleId)
-      .eq("category_id", 25) // Only count Best of Show votes
+      .eq("category_id", categoryId)
 
     if (error) {
       console.error("Error getting vote count:", error)
@@ -187,7 +191,6 @@ export async function getVoteCount(vehicleId: number): Promise<number> {
   }
 }
 
-// Get all votes with vehicle details
 export async function getAllVotes() {
   const supabase = createClient()
 
@@ -196,9 +199,9 @@ export async function getAllVotes() {
       .from("votes")
       .select(`
         *,
-        vehicles!votes_vehicle_id_fkey(id, entry_number, make, model, year, full_name, city, state)
+        vehicles!votes_vehicle_id_fkey(id, entry_number, make, model, year, full_name, city, state),
+        categories!votes_category_id_fkey(id, name, description)
       `)
-      .eq("category_id", 25) // Only get Best of Show votes
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -210,10 +213,67 @@ export async function getAllVotes() {
       data?.map((vote) => ({
         ...vote,
         vehicle: vote.vehicles,
+        category: vote.categories,
       })) || []
     )
   } catch (error) {
     console.error("Error in getAllVotes:", error)
+    return []
+  }
+}
+
+export async function getCurrentVotesByCategory(): Promise<CurrentVote[]> {
+  const vote = await getCurrentVote()
+  return vote ? [vote] : []
+}
+
+export async function getCurrentVoteInCategory(categoryId: number): Promise<CurrentVote | null> {
+  return await getCurrentVote()
+}
+
+export async function getVotingCategories() {
+  return [{ id: 28, name: "People's Choice", description: "Vote for your favorite vehicle" }]
+}
+
+export async function getVoteCountsByCategory(vehicleId: number) {
+  const supabase = createClient()
+
+  try {
+    const { data, error } = await supabase
+      .from("votes")
+      .select(`
+        category_id,
+        categories!votes_category_id_fkey(id, name)
+      `)
+      .eq("vehicle_id", vehicleId)
+
+    if (error) {
+      console.error("Error getting vote counts by category:", error)
+      return []
+    }
+
+    // Group votes by category
+    const voteCounts = data?.reduce(
+      (acc, vote) => {
+        const categoryId = vote.category_id
+        const categoryName = vote.categories?.name || "Unknown"
+
+        if (!acc[categoryId]) {
+          acc[categoryId] = {
+            categoryId,
+            categoryName,
+            count: 0,
+          }
+        }
+        acc[categoryId].count++
+        return acc
+      },
+      {} as Record<number, { categoryId: number; categoryName: string; count: number }>,
+    )
+
+    return Object.values(voteCounts || {})
+  } catch (error) {
+    console.error("Error in getVoteCountsByCategory:", error)
     return []
   }
 }

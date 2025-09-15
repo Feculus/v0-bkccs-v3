@@ -1253,7 +1253,7 @@ export default function AdminPage() {
             <Shield className="h-8 w-8 text-[#BF6849]" />
             <div>
               <h1 className="text-3xl font-bold text-[#3A403D]">Admin Dashboard</h1>
-              <p className="text-[#3A403D]/60">2025 CRUISERFEST Show-N-Shine Management</p>
+              <p className="text-[#3A403D]/60">2025 Cars For A Cause Management</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">

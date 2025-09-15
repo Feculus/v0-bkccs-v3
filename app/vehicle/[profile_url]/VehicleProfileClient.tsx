@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Heart, ArrowLeft, MapPin, Calendar, User, Car, Info, Check } from "lucide-react"
+import { Heart, ArrowLeft, MapPin, Calendar, User, Car, Info, Check, Trophy } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { getCurrentVote, getVoteCount } from "@/lib/vote-utils"
@@ -235,8 +235,13 @@ export default function VehicleProfileClient({ vehicle, categories }: VehiclePro
             {/* Voting Actions */}
             <Card className="bg-white shadow-lg">
               <CardHeader>
-                <CardTitle className="text-bk-dark-gray">Cast Your Vote</CardTitle>
-                <CardDescription>Vote for this vehicle in the {vehicle.category.name} category</CardDescription>
+                <div className="w-16 h-16 bg-bk-bright-red rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="h-8 w-8 text-white" />
+                </div>
+                <CardTitle className="text-bk-dark-gray text-center">Vote for People's Choice Award</CardTitle>
+                <CardDescription className="text-center">
+                  Vote for this amazing {vehicle.year} {vehicle.make} {vehicle.model} in your favorite award category!
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {loading ? (
@@ -263,18 +268,26 @@ export default function VehicleProfileClient({ vehicle, categories }: VehiclePro
                     <AlertDescription>
                       <strong>You've already voted for this vehicle!</strong>
                       <br />
-                      Your vote is recorded in the {vehicle.category.name} category.
+                      Your vote is recorded for the People's Choice award.
                     </AlertDescription>
                   </Alert>
                 ) : hasVotedForDifferentVehicle ? (
                   <Alert className="border-blue-500 bg-blue-50">
                     <Info className="h-4 w-4 text-blue-500" />
                     <AlertDescription>
-                      You've already voted in the {vehicle.category.name} category. Voting for this vehicle will change
-                      your vote.
+                      <strong>People's Choice Voting:</strong> You can vote once for your favorite vehicle. Choose the
+                      vehicle that deserves recognition!
                     </AlertDescription>
                   </Alert>
-                ) : null}
+                ) : (
+                  <Alert className="border-blue-500 bg-blue-50">
+                    <Info className="h-4 w-4 text-blue-500" />
+                    <AlertDescription>
+                      <strong>People's Choice Voting:</strong> You can vote once for your favorite vehicle. Choose the
+                      vehicle that deserves recognition!
+                    </AlertDescription>
+                  </Alert>
+                )}
 
                 {votingStatus === "open" && (
                   <Button
@@ -283,14 +296,14 @@ export default function VehicleProfileClient({ vehicle, categories }: VehiclePro
                     disabled={hasVotedForThisVehicle || vehicle.status === "archived"}
                   >
                     <Link href={`/vote?vehicle=${vehicle.id}&category=${vehicle.category_id}`}>
-                      <Heart className="h-4 w-4 mr-2" />
+                      <Trophy className="h-4 w-4 mr-2" />
                       {hasVotedForThisVehicle
                         ? "Already Voted"
                         : vehicle.status === "archived"
                           ? "Vehicle Archived"
                           : hasVotedForDifferentVehicle
                             ? "Change My Vote"
-                            : "Vote for This Vehicle"}
+                            : "Vote for People's Choice"}
                     </Link>
                   </Button>
                 )}
@@ -298,7 +311,7 @@ export default function VehicleProfileClient({ vehicle, categories }: VehiclePro
                 <div className="text-xs text-bk-dark-gray/60 text-center">
                   {votingStatus === "open" ? (
                     <>
-                      <p>• You can vote once per category</p>
+                      <p>• You can vote once for People's Choice</p>
                       <p>• You can change your vote anytime</p>
                     </>
                   ) : votingStatus === "closed" ? (
