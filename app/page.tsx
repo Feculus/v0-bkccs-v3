@@ -187,7 +187,7 @@ export default function HomePage() {
   return (
     <div className="bg-bk-light-gray">
       {/* Hero Section */}
-      <section className="relative py-20 text-center overflow-hidden">
+      <section className="relative py-20 overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
@@ -203,45 +203,48 @@ export default function HomePage() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-4xl mx-auto px-4">
-          <div className="mb-4">
-            <Image
-              src="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Big%20Kid%20Custom%20Rides%20Logo.png"
-              alt="Big Kid Custom Rides"
-              width={800}
-              height={200}
-              className="mx-auto drop-shadow-lg"
-              priority
-            />
+        <div className="relative z-10 max-w-6xl mx-auto px-4">
+          <div className="mb-12">
+            <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg text-center mb-4">
+              2025 Cars For A Cause Show
+            </h1>
           </div>
-          <div className="w-24 h-1 bg-bk-bright-red mx-auto mb-8"></div>
-          <p className="text-xl text-white/90 mb-12 max-w-2xl mx-auto drop-shadow-md">
-            Where automotive passion meets timeless craftsmanship. Register your vehicle for a chance to take home the
-            honors of the best custom ride at the show.
-          </p>
-          <Button
-            asChild
-            size="lg"
-            className="bg-bk-bright-red hover:bg-bk-bright-red/90 text-bk-light-gray px-8 py-4 text-lg shadow-lg"
-          >
-            <Link href="/register">REGISTER YOUR VEHICLE</Link>
-          </Button>
-          <h4 className="text-xl text-white/90 mt-8 drop-shadow-md max-w-2xl mx-auto">
-            {"EARLY REGISTRATION ENDS SEPTEMBER 19TH"}{" "}
-          </h4>
-          <Button
-            asChild
-            size="lg"
-            className="bg-white hover:bg-white/90 text-bk-bright-red px-8 py-4 text-lg shadow-lg mt-4 border-2 border-white"
-          >
-            <Link
-              href="https://www.bigkidcustomrides.com/products/cars-for-a-cause-registration-2025"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              PREREGISTRATION TICKETS
-            </Link>
-          </Button>
+
+          <div className="flex flex-col lg:items-start lg:justify-between gap-8 lg:flex-row my-0 py-5">
+            {/* Left side - Text content */}
+            <div className="lg:w-2/3">
+              <div className="w-24 h-1 bg-bk-bright-red mb-8"></div>
+              <p className="text-xl text-white/90 mb-8 max-w-2xl drop-shadow-md">
+                Where automotive passion meets timeless craftsmanship. Register your vehicle for a chance to take home
+                the honors of the best custom ride at the show.
+              </p>
+              <h4 className="text-xl text-white/90 drop-shadow-md max-w-2xl">EARLY REGISTRATION ENDS SEPTEMBER 19TH</h4>
+            </div>
+
+            {/* Right side - Buttons */}
+            <div className="lg:w-1/3 flex flex-col gap-8 lg:items-end">
+              <Button
+                asChild
+                size="lg"
+                className="bg-bk-bright-red hover:bg-bk-bright-red/90 text-bk-light-gray px-8 py-4 text-lg shadow-lg w-full lg:w-auto"
+              >
+                <Link href="/register">REGISTER YOUR VEHICLE</Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                className="bg-white hover:bg-white/90 text-bk-bright-red px-8 py-4 text-lg shadow-lg border-2 border-white w-full lg:w-auto"
+              >
+                <Link
+                  href="https://www.bigkidcustomrides.com/products/cars-for-a-cause-registration-2025"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  PREREGISTRATION TICKETS
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -314,6 +317,80 @@ export default function HomePage() {
                   className="w-full h-auto object-cover"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How To Get There Section */}
+      <section className="py-20 bg-bk-light-gray">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-bk-dark-gray mb-4">HOW TO GET THERE</h2>
+            <p className="text-bk-dark-gray/60">Find us at Big Kid Custom Rides in Orem, Utah</p>
+          </div>
+
+          <div className="flex flex-col lg:flex-row items-start gap-12">
+            {/* Address and Details */}
+            <div className="lg:w-1/3 space-y-6">
+              <div className="bg-white rounded-lg p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-bk-dark-gray mb-4">Event Location</h3>
+                <div className="space-y-3 text-bk-dark-gray/80">
+                  <p className="font-semibold">Big Kid Custom Rides</p>
+                  <p>
+                    165 1330 W C2
+                    <br />
+                    Orem, UT 84057
+                  </p>
+                  <div className="pt-4 border-t border-bk-dark-gray/10">
+                    <p className="font-semibold text-bk-bright-red">Event Details</p>
+                    <p>Saturday, September 20th</p>
+                    <p>10:00 AM - 2:00 PM</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-lg">
+                <h3 className="text-xl font-bold text-bk-dark-gray mb-4">Parking & Access</h3>
+                <div className="space-y-2 text-bk-dark-gray/80">
+                  <p>• Free parking available on-site</p>
+                  <p>• Accessible entrance and facilities</p>
+                  <p>• Shop tours available during event</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Google Maps Embed */}
+            <div className="lg:w-2/3">
+              <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3048.8234567890123!2d-111.7234567890123!3d40.2734567890123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s165%201330%20W%20C2%2C%20Orem%2C%20UT%2084057!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus&q=165+1330+W+C2,+Orem,+UT+84057"
+                  width="100%"
+                  height="400"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Event Location Map"
+                  className="w-full"
+                ></iframe>
+              </div>
+
+              <div className="mt-4 text-center">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-bk-bright-red text-bk-bright-red hover:bg-bk-bright-red hover:text-white bg-transparent"
+                >
+                  <a
+                    href="https://www.google.com/maps/dir/?api=1&destination=165+1330+W+C2,+Orem,+UT+84057"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GET DIRECTIONS
+                  </a>
+                </Button>
               </div>
             </div>
           </div>
