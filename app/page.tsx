@@ -331,9 +331,9 @@ export default function HomePage() {
             <p className="text-bk-dark-gray/60">Find us at Big Kid Custom Rides in Orem, Utah</p>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-start gap-12">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
             {/* Address and Details */}
-            <div className="lg:w-1/3 space-y-6">
+            <div className="w-full lg:w-1/3 space-y-6">
               <div className="bg-white rounded-lg p-6 shadow-lg">
                 <h3 className="text-xl font-bold text-bk-dark-gray mb-4">Event Location</h3>
                 <div className="space-y-3 text-bk-dark-gray/80">
@@ -362,7 +362,7 @@ export default function HomePage() {
             </div>
 
             {/* Google Maps Embed */}
-            <div className="lg:w-2/3">
+            <div className="w-full lg:w-2/3">
               <div className="bg-white rounded-lg overflow-hidden shadow-lg">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3048.8234567890123!2d-111.7234567890123!3d40.2734567890123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s165%201330%20W%20C2%2C%20Orem%2C%20UT%2084057!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus&q=165+1330+W+C2,+Orem,+UT+84057"
