@@ -72,7 +72,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "img-src 'self' data: https: blob: *.public.blob.vercel-storage.com",
               "font-src 'self' fonts.gstatic.com data:",
-              "connect-src 'self' *.vercel.app vitals.vercel-insights.com",
+              "connect-src 'self' *.vercel.app vitals.vercel-insights.com *.supabase.co",
               "frame-src 'self' www.google.com maps.google.com",
               "media-src 'self'",
               "object-src 'none'",
