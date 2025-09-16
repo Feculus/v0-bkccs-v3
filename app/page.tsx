@@ -259,7 +259,7 @@ export default function HomePage() {
             <div className="space-y-4">
               <Users className="h-16 w-16 text-bk-bright-red mx-auto" />
               <div>
-                <h3 className="text-4xl font-bold text-bk-dark-gray">LOCAL &amp; REGIONAL  </h3>
+                <h3 className="text-4xl font-bold text-bk-dark-gray">LOCAL &amp; REGIONAL </h3>
                 <p className="text-bk-dark-gray/60 uppercase tracking-wide">ATTENDEES</p>
               </div>
             </div>
@@ -541,39 +541,6 @@ export default function HomePage() {
                   />
                 </div>
               </a>
-            </div>
-          </div>
-
-          {/* Major Sponsors - Glide.js Slider */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold text-bk-bright-red text-center mb-8">MAJOR SPONSORS</h3>
-            <div className="relative">
-              <div ref={glideRef} className="glide">
-                <div className="glide__track" data-glide-el="track">
-                  <ul className="glide__slides">
-                    {sponsors.map((sponsor, index) => (
-                      <li key={index} className="glide__slide">
-                        <a
-                          href={sponsor.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block hover:opacity-80 transition-opacity group"
-                        >
-                          <div className="w-full h-64 bg-white border-2 border-bk-dark-gray/10 rounded-lg flex items-center justify-center p-6 group-hover:border-bk-bright-red/30 group-hover:shadow-lg transition-all duration-300">
-                            <Image
-                              src={sponsor.src || "/placeholder.svg"}
-                              alt={sponsor.alt}
-                              width={400}
-                              height={160}
-                              className="max-w-full max-h-full object-contain"
-                            />
-                          </div>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
             </div>
           </div>
 

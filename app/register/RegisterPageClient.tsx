@@ -552,8 +552,7 @@ export default function RegisterPageClient() {
               <CardTitle className="text-3xl font-bold text-bk-dark-gray">Vehicle Registration</CardTitle>
             </div>
             <CardDescription className="text-bk-dark-gray/60">
-              Register your vehicle for the 2025 Cars For A Cause Best in Show competition. All fields marked with * are
-              required.
+              Register your vehicle for the 2025 Cars For A Cause competition. All fields marked with * are required.
             </CardDescription>
             {currentCount !== null && (
               <div className="mt-4 p-3 bg-bk-light-gray rounded-lg">
