@@ -68,11 +68,11 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline' *.vercel-scripts.com *.vercel.app",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' *.vercel-scripts.com *.vercel.app sdks.shopifycdn.com",
               "style-src 'self' 'unsafe-inline' fonts.googleapis.com",
               "img-src 'self' data: https: blob: *.public.blob.vercel-storage.com",
               "font-src 'self' fonts.gstatic.com data:",
-              "connect-src 'self' *.vercel.app vitals.vercel-insights.com *.supabase.co",
+              "connect-src 'self' *.vercel.app vitals.vercel-insights.com *.supabase.co *.myshopify.com",
               "frame-src 'self' www.google.com maps.google.com",
               "media-src 'self'",
               "object-src 'none'",
