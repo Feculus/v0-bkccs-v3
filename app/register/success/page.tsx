@@ -398,7 +398,7 @@ export default function RegistrationSuccessPage() {
               </div>
 
               <div className="text-center space-y-4">
-                <div className="flex flex-col items-center justify-center py-1.5">
+                <div className="w-full flex flex-col items-center justify-center py-8">
                   <ShopifyBuyButton />
                 </div>
 
