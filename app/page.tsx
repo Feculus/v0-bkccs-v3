@@ -230,19 +230,6 @@ export default function HomePage() {
               >
                 <Link href="/register">REGISTER YOUR VEHICLE</Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                className="bg-white hover:bg-white/90 text-bk-bright-red px-8 py-4 text-lg shadow-lg border-2 border-white w-full lg:w-auto"
-              >
-                <Link
-                  href="https://www.bigkidcustomrides.com/products/cars-for-a-cause-registration-2025"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  PREREGISTRATION TICKETS
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
