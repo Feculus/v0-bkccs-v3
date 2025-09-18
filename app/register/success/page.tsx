@@ -8,6 +8,7 @@ import { CheckCircle, Download, QrCode, Share2, CreditCard, ArrowRight } from "l
 import Link from "next/link"
 import { QRCodeSVG } from "qrcode.react"
 import { createClient } from "@/utils/supabase/client"
+import ShopifyBuyButton from "@/components/shopify-buy-button"
 
 const supabase = createClient()
 import type { Vehicle } from "@/lib/types"
@@ -25,254 +26,6 @@ export default function RegistrationSuccessPage() {
       loadVehicle()
     }
   }, [vehicleId])
-
-  useEffect(() => {
-    if (showTicketPurchase && !ticketPurchased) {
-      loadShopifyBuyButton()
-    }
-  }, [showTicketPurchase, ticketPurchased])
-
-  const loadShopifyBuyButton = () => {
-    console.log("[v0] Starting Shopify Buy Button initialization")
-
-    const waitForElement = () => {
-      const targetNode = document.getElementById("product-component-1758228942551")
-      if (!targetNode) {
-        console.log("[v0] Target element not ready, waiting...")
-        setTimeout(waitForElement, 100)
-        return
-      }
-
-      console.log("[v0] Target element found, proceeding with script load")
-      loadScript()
-    }
-
-    const scriptURL = "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"
-
-    if (window.ShopifyBuy) {
-      console.log("[v0] ShopifyBuy already exists")
-      if (window.ShopifyBuy.UI) {
-        console.log("[v0] ShopifyBuy.UI exists, checking for element")
-        waitForElement()
-      } else {
-        console.log("[v0] ShopifyBuy.UI missing, loading script")
-        waitForElement()
-      }
-    } else {
-      console.log("[v0] ShopifyBuy not found, waiting for element then loading script")
-      waitForElement()
-    }
-
-    function loadScript() {
-      console.log("[v0] Loading Shopify script from:", scriptURL)
-      const script = document.createElement("script")
-      script.async = true
-      script.src = scriptURL
-      const head = document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]
-      head.appendChild(script)
-      script.onload = () => {
-        console.log("[v0] Shopify script loaded successfully")
-        setTimeout(initializeShopifyBuyButton, 200)
-      }
-      script.onerror = (error) => {
-        console.error("[v0] Failed to load Shopify script:", error)
-      }
-    }
-
-    function initializeShopifyBuyButton() {
-      console.log("[v0] Initializing Shopify Buy Button")
-
-      const targetNode = document.getElementById("product-component-1758228942551")
-      if (!targetNode) {
-        console.error("[v0] Target node still not found during initialization")
-        return
-      }
-
-      if (!window.ShopifyBuy || !window.ShopifyBuy.buildClient) {
-        console.error("[v0] ShopifyBuy.buildClient not available")
-        return
-      }
-
-      try {
-        const client = window.ShopifyBuy.buildClient({
-          domain: "big-kid-custom-rides.myshopify.com",
-          storefrontAccessToken: "c45ac1e43631694b541af306601fbd08",
-        })
-
-        console.log("[v0] Shopify client created:", client)
-
-        if (!window.ShopifyBuy.UI) {
-          console.error("[v0] ShopifyBuy.UI not available")
-          return
-        }
-
-        window.ShopifyBuy.UI.onReady(client)
-          .then((ui) => {
-            console.log("[v0] Shopify UI ready, creating component")
-
-            const finalTargetNode = document.getElementById("product-component-1758228942551")
-            if (!finalTargetNode) {
-              console.error("[v0] Target node disappeared before component creation")
-              return
-            }
-
-            console.log("[v0] Target node confirmed, creating product component")
-
-            ui.createComponent("product", {
-              id: "8761791348901",
-              node: finalTargetNode,
-              moneyFormat: "%24%7B%7Bamount%7D%7D",
-              options: {
-                product: {
-                  styles: {
-                    product: {
-                      "@media (min-width: 601px)": {
-                        "max-width": "calc(25% - 20px)",
-                        "margin-left": "20px",
-                        "margin-bottom": "50px",
-                      },
-                    },
-                    button: {
-                      "font-family": "Roboto, sans-serif",
-                      "font-weight": "bold",
-                      "font-size": "18px",
-                      "padding-top": "17px",
-                      "padding-bottom": "17px",
-                      ":hover": {
-                        "background-color": "#7e1c24",
-                      },
-                      "background-color": "#8c1f28",
-                      ":focus": {
-                        "background-color": "#7e1c24",
-                      },
-                      "border-radius": "0px",
-                      "padding-left": "59px",
-                      "padding-right": "59px",
-                    },
-                    quantityInput: {
-                      "font-size": "18px",
-                      "padding-top": "17px",
-                      "padding-bottom": "17px",
-                    },
-                  },
-                  buttonDestination: "checkout",
-                  contents: {
-                    img: false,
-                    title: false,
-                    price: false,
-                  },
-                  text: {
-                    button: "Purchase Ticket",
-                  },
-                  googleFonts: ["Roboto"],
-                },
-                productSet: {
-                  styles: {
-                    products: {
-                      "@media (min-width: 601px)": {
-                        "margin-left": "-20px",
-                      },
-                    },
-                  },
-                },
-                modalProduct: {
-                  contents: {
-                    img: false,
-                    imgWithCarousel: true,
-                    button: false,
-                    buttonWithQuantity: true,
-                  },
-                  styles: {
-                    product: {
-                      "@media (min-width: 601px)": {
-                        "max-width": "100%",
-                        "margin-left": "0px",
-                        "margin-bottom": "0px",
-                      },
-                    },
-                    button: {
-                      "font-family": "Roboto, sans-serif",
-                      "font-weight": "bold",
-                      "font-size": "18px",
-                      "padding-top": "17px",
-                      "padding-bottom": "17px",
-                      ":hover": {
-                        "background-color": "#7e1c24",
-                      },
-                      "background-color": "#8c1f28",
-                      ":focus": {
-                        "background-color": "#7e1c24",
-                      },
-                      "border-radius": "0px",
-                    },
-                    quantityInput: {
-                      "font-size": "18px",
-                      "padding-top": "17px",
-                      "padding-bottom": "17px",
-                    },
-                  },
-                  googleFonts: ["Roboto"],
-                  text: {
-                    button: "Add to cart",
-                  },
-                },
-                option: {},
-                cart: {
-                  styles: {
-                    button: {
-                      "font-family": "Roboto, sans-serif",
-                      "font-weight": "bold",
-                      "font-size": "18px",
-                      "padding-top": "17px",
-                      "padding-bottom": "17px",
-                      ":hover": {
-                        "background-color": "#7e1c24",
-                      },
-                      "background-color": "#8c1f28",
-                      ":focus": {
-                        "background-color": "#7e1c24",
-                      },
-                      "border-radius": "0px",
-                    },
-                  },
-                  text: {
-                    total: "Subtotal",
-                    button: "Checkout",
-                  },
-                  googleFonts: ["Roboto"],
-                },
-                toggle: {
-                  styles: {
-                    toggle: {
-                      "font-family": "Roboto, sans-serif",
-                      "font-weight": "bold",
-                      "background-color": "#8c1f28",
-                      ":hover": {
-                        "background-color": "#7e1c24",
-                      },
-                      ":focus": {
-                        "background-color": "#7e1c24",
-                      },
-                    },
-                    count: {
-                      "font-size": "18px",
-                    },
-                  },
-                  googleFonts: ["Roboto"],
-                },
-              },
-            })
-
-            console.log("[v0] Shopify product component created successfully")
-          })
-          .catch((error) => {
-            console.error("[v0] Shopify UI onReady error:", error)
-          })
-      } catch (error) {
-        console.error("[v0] Error initializing Shopify Buy Button:", error)
-      }
-    }
-  }
 
   const loadVehicle = async () => {
     try {
@@ -633,9 +386,7 @@ export default function RegistrationSuccessPage() {
             <CardContent className="space-y-6">
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    
-                  </div>
+                  <div className="flex-shrink-0"></div>
                   <div>
                     <h4 className="text-red-800 font-semibold text-center">Payment Required</h4>
                     <p className="text-red-700 text-sm mt-1 text-center">
@@ -647,19 +398,8 @@ export default function RegistrationSuccessPage() {
               </div>
 
               <div className="text-center space-y-4">
-                
-                
-
-                {/* Shopify Buy Button Container */}
                 <div className="flex flex-col items-center justify-center py-1.5">
-                  <div className="w-full max-w-md mx-auto flex justify-center">
-                    <div
-                      id="product-component-1758228942551"
-                      className="min-h-[60px] flex items-center justify-center w-full"
-                    >
-                      {/* Shopify buy button will render here */}
-                    </div>
-                  </div>
+                  <ShopifyBuyButton />
                 </div>
 
                 {/* For testing purposes only */}
