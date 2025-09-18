@@ -191,7 +191,7 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/69camaro-15_d7405e10-f6bb-40d3-ae82%281%29-oViEgjndQvupAA4LFFe88Tffr0dIw6.webp"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/69camaro-15_d7405e10-f6bb-40d3-ae82%281%29-2k4zUC6s3BMxWID0szlSArwib4kMWF.webp"
             alt="Classic 1969 Camaro"
             fill
             className="object-cover"
@@ -310,7 +310,7 @@ export default function HomePage() {
             <div className="lg:w-1/2">
               <div className="relative rounded-lg overflow-hidden shadow-xl">
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Flyer_page_1_b0e86029-dd38-4572-9fe4%281%29-OPtnaq6T0LX0CcrzXdjuHv0pE3u3BT.webp"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Flyer_page_1_b0e86029-dd38-4572-9fe4%281%29-WAKKRvMLUKNqcosAjoaBUU2meV9Nwe.webp"
                   alt="Cars for a Cause Event Flyer"
                   width={600}
                   height={800}
@@ -610,7 +610,7 @@ export default function HomePage() {
               >
                 <div className="w-80 h-32 bg-white border-2 border-bk-dark-gray/10 rounded-lg flex items-center justify-center p-4">
                   <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Big%20Kid%20Custom%20Rides%20Logo%281%29-LOAiRaUBFoJCFVSYnaSFKKa2sY80Lz.png"
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Big%20Kid%20Custom%20Rides%20Logo%281%29-DFu2KNfmpnlHHw4MQvVZirVhMJx7jv.png"
                     alt="Toyota"
                     width={280}
                     height={84}
@@ -633,7 +633,7 @@ export default function HomePage() {
               >
                 <div className="w-full h-16 bg-white border border-bk-dark-gray/10 rounded-lg flex items-center justify-center p-4">
                   <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Logo%20200x50%281%29-Sxuhrz2GppX9C6SPFab923P6oOwCFu.png"
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Logo%20200x50%281%29-762AEVQqFlVTgaXUA1W6s3Gp98vLM0.png"
                     alt="Leo Linx Media Partner"
                     width={120}
                     height={30}
@@ -649,7 +649,7 @@ export default function HomePage() {
               >
                 <div className="w-full h-16 bg-white border border-bk-dark-gray/10 rounded-lg flex items-center justify-center p-4">
                   <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/TALENTA%20Logo%202023%20250px%281%29-CynPhMkbLfRdPoF8OxLwsxttRXAvJq.png"
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/TALENTA%20Logo%202023%20250px%281%29-Al0tnET2H5SJ5PhHQegibaCIcZ6AIH.png"
                     alt="Talenta Commerce"
                     width={120}
                     height={30}

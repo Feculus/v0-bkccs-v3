@@ -100,10 +100,8 @@ export default function ShopifyBuyButton() {
   }, [])
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div ref={containerRef} className="min-h-[60px] flex items-center justify-center">
-        <div className="text-gray-500">Loading purchase button...</div>
-      </div>
+    <div className="w-full max-w-md mx-auto text-center">
+      <div ref={containerRef} className="min-h-[60px] flex items-center justify-center"></div>
     </div>
   )
 }

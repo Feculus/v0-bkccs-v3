@@ -46,7 +46,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity" onClick={closeMobileMenu}>
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Big%20Kid%20Custom%20Rides%20Logo%281%29-LOAiRaUBFoJCFVSYnaSFKKa2sY80Lz.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Big%20Kid%20Custom%20Rides%20Logo%281%29-DFu2KNfmpnlHHw4MQvVZirVhMJx7jv.png"
               alt="Big Kid Custom Rides Logo"
               width={230}
               height={69}
