@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Download, QrCode, Share2 } from "lucide-react"
+import { CheckCircle, Download, QrCode, Share2, CreditCard, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { QRCodeSVG } from "qrcode.react"
 import { createClient } from "@/utils/supabase/client"
@@ -17,12 +17,262 @@ export default function RegistrationSuccessPage() {
   const vehicleId = searchParams.get("id")
   const [vehicle, setVehicle] = useState<Vehicle | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showTicketPurchase, setShowTicketPurchase] = useState(true)
+  const [ticketPurchased, setTicketPurchased] = useState(false)
 
   useEffect(() => {
     if (vehicleId) {
       loadVehicle()
     }
   }, [vehicleId])
+
+  useEffect(() => {
+    if (showTicketPurchase && !ticketPurchased) {
+      loadShopifyBuyButton()
+    }
+  }, [showTicketPurchase, ticketPurchased])
+
+  const loadShopifyBuyButton = () => {
+    console.log("[v0] Starting Shopify Buy Button initialization")
+
+    const waitForElement = () => {
+      const targetNode = document.getElementById("product-component-1758228942551")
+      if (!targetNode) {
+        console.log("[v0] Target element not ready, waiting...")
+        setTimeout(waitForElement, 100)
+        return
+      }
+
+      console.log("[v0] Target element found, proceeding with script load")
+      loadScript()
+    }
+
+    const scriptURL = "https://sdks.shopifycdn.com/buy-button/latest/buy-button-storefront.min.js"
+
+    if (window.ShopifyBuy) {
+      console.log("[v0] ShopifyBuy already exists")
+      if (window.ShopifyBuy.UI) {
+        console.log("[v0] ShopifyBuy.UI exists, checking for element")
+        waitForElement()
+      } else {
+        console.log("[v0] ShopifyBuy.UI missing, loading script")
+        waitForElement()
+      }
+    } else {
+      console.log("[v0] ShopifyBuy not found, waiting for element then loading script")
+      waitForElement()
+    }
+
+    function loadScript() {
+      console.log("[v0] Loading Shopify script from:", scriptURL)
+      const script = document.createElement("script")
+      script.async = true
+      script.src = scriptURL
+      const head = document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]
+      head.appendChild(script)
+      script.onload = () => {
+        console.log("[v0] Shopify script loaded successfully")
+        setTimeout(initializeShopifyBuyButton, 200)
+      }
+      script.onerror = (error) => {
+        console.error("[v0] Failed to load Shopify script:", error)
+      }
+    }
+
+    function initializeShopifyBuyButton() {
+      console.log("[v0] Initializing Shopify Buy Button")
+
+      const targetNode = document.getElementById("product-component-1758228942551")
+      if (!targetNode) {
+        console.error("[v0] Target node still not found during initialization")
+        return
+      }
+
+      if (!window.ShopifyBuy || !window.ShopifyBuy.buildClient) {
+        console.error("[v0] ShopifyBuy.buildClient not available")
+        return
+      }
+
+      try {
+        const client = window.ShopifyBuy.buildClient({
+          domain: "big-kid-custom-rides.myshopify.com",
+          storefrontAccessToken: "c45ac1e43631694b541af306601fbd08",
+        })
+
+        console.log("[v0] Shopify client created:", client)
+
+        if (!window.ShopifyBuy.UI) {
+          console.error("[v0] ShopifyBuy.UI not available")
+          return
+        }
+
+        window.ShopifyBuy.UI.onReady(client)
+          .then((ui) => {
+            console.log("[v0] Shopify UI ready, creating component")
+
+            const finalTargetNode = document.getElementById("product-component-1758228942551")
+            if (!finalTargetNode) {
+              console.error("[v0] Target node disappeared before component creation")
+              return
+            }
+
+            console.log("[v0] Target node confirmed, creating product component")
+
+            ui.createComponent("product", {
+              id: "8761791348901",
+              node: finalTargetNode,
+              moneyFormat: "%24%7B%7Bamount%7D%7D",
+              options: {
+                product: {
+                  styles: {
+                    product: {
+                      "@media (min-width: 601px)": {
+                        "max-width": "calc(25% - 20px)",
+                        "margin-left": "20px",
+                        "margin-bottom": "50px",
+                      },
+                    },
+                    button: {
+                      "font-family": "Roboto, sans-serif",
+                      "font-weight": "bold",
+                      "font-size": "18px",
+                      "padding-top": "17px",
+                      "padding-bottom": "17px",
+                      ":hover": {
+                        "background-color": "#7e1c24",
+                      },
+                      "background-color": "#8c1f28",
+                      ":focus": {
+                        "background-color": "#7e1c24",
+                      },
+                      "border-radius": "0px",
+                      "padding-left": "59px",
+                      "padding-right": "59px",
+                    },
+                    quantityInput: {
+                      "font-size": "18px",
+                      "padding-top": "17px",
+                      "padding-bottom": "17px",
+                    },
+                  },
+                  buttonDestination: "checkout",
+                  contents: {
+                    img: false,
+                    title: false,
+                    price: false,
+                  },
+                  text: {
+                    button: "Purchase Ticket",
+                  },
+                  googleFonts: ["Roboto"],
+                },
+                productSet: {
+                  styles: {
+                    products: {
+                      "@media (min-width: 601px)": {
+                        "margin-left": "-20px",
+                      },
+                    },
+                  },
+                },
+                modalProduct: {
+                  contents: {
+                    img: false,
+                    imgWithCarousel: true,
+                    button: false,
+                    buttonWithQuantity: true,
+                  },
+                  styles: {
+                    product: {
+                      "@media (min-width: 601px)": {
+                        "max-width": "100%",
+                        "margin-left": "0px",
+                        "margin-bottom": "0px",
+                      },
+                    },
+                    button: {
+                      "font-family": "Roboto, sans-serif",
+                      "font-weight": "bold",
+                      "font-size": "18px",
+                      "padding-top": "17px",
+                      "padding-bottom": "17px",
+                      ":hover": {
+                        "background-color": "#7e1c24",
+                      },
+                      "background-color": "#8c1f28",
+                      ":focus": {
+                        "background-color": "#7e1c24",
+                      },
+                      "border-radius": "0px",
+                    },
+                    quantityInput: {
+                      "font-size": "18px",
+                      "padding-top": "17px",
+                      "padding-bottom": "17px",
+                    },
+                  },
+                  googleFonts: ["Roboto"],
+                  text: {
+                    button: "Add to cart",
+                  },
+                },
+                option: {},
+                cart: {
+                  styles: {
+                    button: {
+                      "font-family": "Roboto, sans-serif",
+                      "font-weight": "bold",
+                      "font-size": "18px",
+                      "padding-top": "17px",
+                      "padding-bottom": "17px",
+                      ":hover": {
+                        "background-color": "#7e1c24",
+                      },
+                      "background-color": "#8c1f28",
+                      ":focus": {
+                        "background-color": "#7e1c24",
+                      },
+                      "border-radius": "0px",
+                    },
+                  },
+                  text: {
+                    total: "Subtotal",
+                    button: "Checkout",
+                  },
+                  googleFonts: ["Roboto"],
+                },
+                toggle: {
+                  styles: {
+                    toggle: {
+                      "font-family": "Roboto, sans-serif",
+                      "font-weight": "bold",
+                      "background-color": "#8c1f28",
+                      ":hover": {
+                        "background-color": "#7e1c24",
+                      },
+                      ":focus": {
+                        "background-color": "#7e1c24",
+                      },
+                    },
+                    count: {
+                      "font-size": "18px",
+                    },
+                  },
+                  googleFonts: ["Roboto"],
+                },
+              },
+            })
+
+            console.log("[v0] Shopify product component created successfully")
+          })
+          .catch((error) => {
+            console.error("[v0] Shopify UI onReady error:", error)
+          })
+      } catch (error) {
+        console.error("[v0] Error initializing Shopify Buy Button:", error)
+      }
+    }
+  }
 
   const loadVehicle = async () => {
     try {
@@ -50,6 +300,11 @@ export default function RegistrationSuccessPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const proceedToQRCode = () => {
+    setShowTicketPurchase(false)
+    setTicketPurchased(true)
   }
 
   const handlePrintPDF = () => {
@@ -340,6 +595,82 @@ export default function RegistrationSuccessPage() {
     )
   }
 
+  if (showTicketPurchase && !ticketPurchased) {
+    return (
+      <div className="min-h-screen bg-bk-light-gray py-8">
+        <div className="max-w-4xl mx-auto px-4">
+          {/* Registration Success Message */}
+          <Card className="bg-white shadow-lg mb-8">
+            <CardHeader className="text-center">
+              <CheckCircle className="h-16 w-16 text-bk-deep-red mx-auto mb-4" />
+              <CardTitle className="text-3xl font-bold text-bk-dark-gray">Registration Successful!</CardTitle>
+              <CardDescription className="text-bk-dark-gray/60">
+                Your vehicle has been registered for the Cars For A Cause 2025 show
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <div className="bg-bk-light-gray rounded-lg p-6">
+                <h3 className="text-xl font-semibold text-bk-dark-gray mb-2">Entry #{vehicle.entry_number}</h3>
+                <p className="text-bk-dark-gray/80">
+                  {vehicle.year} {vehicle.make} {vehicle.model}
+                </p>
+                <p className="text-bk-dark-gray/60">
+                  Registered by {vehicle.full_name} from {vehicle.city}, {vehicle.state}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Ticket Purchase Required */}
+          <Card className="bg-white shadow-lg mb-8">
+            <CardHeader className="text-center">
+              <CreditCard className="h-16 w-16 text-bk-bright-red mx-auto mb-4" />
+              <CardTitle className="text-3xl font-bold text-bk-dark-gray">Complete Your Registration</CardTitle>
+              <CardDescription className="text-bk-dark-gray/60">
+                Purchase your entry ticket to finalize your registration
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    
+                  </div>
+                  <div>
+                    <h4 className="text-red-800 font-semibold text-center">Payment Required</h4>
+                    <p className="text-red-700 text-sm mt-1 text-center">
+                      You must complete the purchase of an entry ticket to have your registration confirmed. Failure to
+                      purchase a ticket will exclude you from participation in the car show.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center space-y-4">
+                
+                
+
+                {/* Shopify Buy Button Container */}
+                <div className="flex flex-col items-center justify-center py-1.5">
+                  <div className="w-full max-w-md mx-auto flex justify-center">
+                    <div
+                      id="product-component-1758228942551"
+                      className="min-h-[60px] flex items-center justify-center w-full"
+                    >
+                      {/* Shopify buy button will render here */}
+                    </div>
+                  </div>
+                </div>
+
+                {/* For testing purposes only */}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-bk-light-gray py-8">
       <div className="max-w-4xl mx-auto px-4">
@@ -347,12 +678,20 @@ export default function RegistrationSuccessPage() {
         <Card className="bg-white shadow-lg mb-8">
           <CardHeader className="text-center">
             <CheckCircle className="h-16 w-16 text-bk-deep-red mx-auto mb-4" />
-            <CardTitle className="text-3xl font-bold text-bk-dark-gray">Registration Successful!</CardTitle>
+            <CardTitle className="text-3xl font-bold text-bk-dark-gray">Registration Complete!</CardTitle>
             <CardDescription className="text-bk-dark-gray/60">
-              Your vehicle has been registered for the Cars For A Cause 2025 show    
+              Your ticket has been purchased and your registration is now complete
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-4">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center justify-center space-x-2 text-green-800">
+                <CheckCircle className="h-5 w-5" />
+                <span className="font-semibold">Payment Confirmed</span>
+              </div>
+              <p className="text-green-700 text-sm mt-1">Your entry ticket has been purchased successfully</p>
+            </div>
+
             <div className="bg-bk-light-gray rounded-lg p-6">
               <h3 className="text-xl font-semibold text-bk-dark-gray mb-2">Entry #{vehicle.entry_number}</h3>
               <p className="text-bk-dark-gray/80">
@@ -363,19 +702,26 @@ export default function RegistrationSuccessPage() {
               </p>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center space-x-4">
               <Button asChild variant="outline">
                 <Link href={`/vehicle/${vehicle.profile_url}`}>
                   <Share2 className="h-4 w-4 mr-2" />
                   View Profile
                 </Link>
               </Button>
+              <Button
+                onClick={() => document.getElementById("display-card-section")?.scrollIntoView({ behavior: "smooth" })}
+                className="bg-bk-bright-red hover:bg-bk-bright-red/90 text-white"
+              >
+                <ArrowRight className="h-4 w-4 mr-2" />
+                Print Display Card
+              </Button>
             </div>
           </CardContent>
         </Card>
 
         {/* Printable Display Card */}
-        <div className="print:block hidden">
+        <div className="print:block hidden" id="display-card-section">
           <div className="w-[8in] h-[10in] bg-white p-8 mx-auto border-2 border-bk-dark-gray print:border-0">
             <div className="text-center mb-8">
               <h1 className="text-4xl font-bold text-bk-dark-gray mb-2">2025 CRUISERFEST Show-N-Shine</h1>
@@ -435,7 +781,7 @@ export default function RegistrationSuccessPage() {
               <div className="relative bg-gradient-to-br from-white to-gray-50 p-6 rounded-lg shadow-sm border border-gray-200">
                 <div className="text-center space-y-4">
                   <div>
-                    <h2 className="text-lg font-bold text-bk-dark-gray mb-1">Cars For A Cause 2025   </h2>
+                    <h2 className="text-lg font-bold text-bk-dark-gray mb-1">Cars For A Cause 2025</h2>
                     <p className="text-xs font-medium text-bk-dark-gray/60 uppercase tracking-wide mb-2">
                       {"Car Show"}
                     </p>

@@ -9,7 +9,7 @@ export function Footer() {
           <div>
             <div className="flex items-center mb-4">
               <Image
-                src="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/logos/Big%20Kid%20Custom%20Rides%20Logo.png"
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/Big%20Kid%20Custom%20Rides%20Logo%281%29-LOAiRaUBFoJCFVSYnaSFKKa2sY80Lz.png"
                 alt="Big Kid Custom Rides Logo"
                 width={360}
                 height={108}

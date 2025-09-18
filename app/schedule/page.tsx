@@ -34,7 +34,7 @@ export default function SchedulePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://wrf7neuyrmcfw9ve.public.blob.vercel-storage.com/site%20images/DSC09819.webp"
+            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/design-mode-images/DSC09819%281%29-Wem9xxeBtV0UIpf1NHFfxyBeMd5PoU.webp"
             alt="Car show event background"
             fill
             className="object-cover"
