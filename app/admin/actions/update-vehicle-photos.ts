@@ -75,16 +75,16 @@ export async function updateVehiclePhotos(vehicleId: number, formData: FormData)
           error: `File "${file.name}" is not a supported image type. Please use JPEG, PNG, or WebP.`,
         }
       }
-      if (file.size > 5 * 1024 * 1024) {
-        return { success: false, error: `File "${file.name}" is too large. Maximum size per file is 5MB.` }
+      if (file.size > 10 * 1024 * 1024) {
+        return { success: false, error: `File "${file.name}" is too large. Maximum size per file is 10MB.` }
       }
       totalSize += file.size
     }
 
-    if (totalSize > 25 * 1024 * 1024) {
+    if (totalSize > 30 * 1024 * 1024) {
       return {
         success: false,
-        error: "Total file size too large. Please reduce image sizes. Maximum total: 25MB (5MB per image).",
+        error: "Total file size too large. Please reduce image sizes. Maximum total: 30MB (10MB per image).",
       }
     }
 
@@ -113,7 +113,7 @@ export async function updateVehiclePhotos(vehicleId: number, formData: FormData)
           if (uploadError.message.includes("413") || uploadError.message.includes("too large")) {
             return {
               success: false,
-              error: `File "${file.name}" is too large for upload. Please compress the image and try again.`,
+              error: `File "${file.name}" is too large for upload. Please compress the image and try again. Maximum size: 10MB.`,
             }
           } else if (uploadError.message.includes("timeout")) {
             return {
@@ -175,7 +175,10 @@ export async function updateVehiclePhotos(vehicleId: number, formData: FormData)
 
     if (error instanceof Error) {
       if (error.message.includes("413")) {
-        return { success: false, error: "Files are too large. Please reduce image sizes and try again." }
+        return {
+          success: false,
+          error: "Files are too large. Please reduce image sizes and try again. Maximum: 10MB per file, 30MB total.",
+        }
       } else if (error.message.includes("timeout")) {
         return { success: false, error: "Upload timed out. Please check your connection and try again." }
       } else if (error.message.includes("network")) {

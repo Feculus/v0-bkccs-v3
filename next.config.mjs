@@ -16,6 +16,9 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ['@vercel/blob'],
+    serverActions: {
+      bodySizeLimit: '30mb',
+    },
   },
   serverRuntimeConfig: {
     maxFileSize: '30mb',

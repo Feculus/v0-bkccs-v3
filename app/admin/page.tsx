@@ -617,7 +617,7 @@ export default function AdminPage() {
 
           // Check if it's a 413 error (Request Entity Too Large)
           if (serverError instanceof Error && serverError.message.includes("413")) {
-            setPhotoError("Files are too large. Please reduce image sizes and try again. Maximum total size is 10MB.")
+            setPhotoError("Files are too large. Please reduce image sizes and try again. Maximum total size is 30MB.")
           } else if (serverError instanceof Error && serverError.message.includes("timeout")) {
             setPhotoError("Upload timed out. Please check your connection and try again.")
           } else {
@@ -1499,7 +1499,7 @@ export default function AdminPage() {
                     </CardTitle>
                     <CardDescription>Live voting results and statistics</CardDescription>
                   </div>
-                  <Button asChild className="bg-[#BF6849] hover:bg-[#BF6849]/90 text-white">
+                  <Button asChild className="bg-[#BF6849] hover:bg-[#BF6849]/90">
                     <Link href="/admin/votes">
                       <BarChart3 className="h-4 w-4 mr-2" />
                       View Detailed Results

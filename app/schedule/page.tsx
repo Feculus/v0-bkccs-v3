@@ -4,25 +4,53 @@ import { MapPin } from "lucide-react"
 export default function SchedulePage() {
   const scheduleItems = [
     {
-      time: "9:00",
+      time: "9:00 - 11:00",
       period: "AM",
       title: "CAR SHOW REGISTRATION OPEN ON SITE",
-      description: "Ticket sales are available at the door. Registration for the show is open until 10:30 AM.",
+      description: "Ticket sales are available at the door. Registration for the show is open until 11:00 AM.",
       location: "Big Kid Custom Rides | Orem, UT",
     },
     {
-      time: "10:00",
+      time: "11:00",
       period: "AM",
-      title: "DOORS OPEN",
+      title: "HOT ROD GRILL OPENS",
       description:
-        "Come check out the amazing builds and rides",
+        "Come grab something to eat and check out some cool rides",
       location: "Big Kid Custom Rides | Orem, UT",
     },
     {
-      time: "2:00",
-      period: "PM",
-      title: "SHOW ENDS",
+      time: "11:30 - 1:30",
+      period: "AM, PM",
+      title: "LIVE MUSIC",
       description: "Awards will be given before the end of the show",
+      location: "Big Kid Custom Rides | Orem, UT",
+    },
+    {
+      time: "1:30",
+      period: "PM",
+      title: "REV BATTLE",
+      description: "Make it sing!",
+      location: "Big Kid Custom Rides | Orem, UT",
+    },
+    {
+      time: "1:45",
+      period: "PM",
+      title: "MINI CAR SHOW AWARDS",
+      description: "Must be present to win",
+      location: "Big Kid Custom Rides | Orem, UT",
+    },
+    {
+      time: "1:50",
+      period: "PM",
+      title: "AWARDS SHOW",
+      description: "Must be present to win",
+      location: "Big Kid Custom Rides | Orem, UT",
+    },
+    {
+      time: "All Day",
+      period: "",
+      title: "RAFFLE EVERY 20 MINS",
+      description: "Must be present to win",
       location: "Big Kid Custom Rides | Orem, UT",
     },
   ]
