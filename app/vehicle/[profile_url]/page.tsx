@@ -234,9 +234,9 @@ export default function VehicleProfilePage() {
           </Button>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Image Gallery */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* Main Image */}
             <div
               className="aspect-video relative overflow-hidden rounded-lg bg-white shadow-lg cursor-pointer group"
@@ -301,39 +301,38 @@ export default function VehicleProfilePage() {
           </div>
 
           {/* Vehicle Details */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card className="bg-white shadow-lg">
-              <CardHeader className="pb-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                  <Badge className="bg-[#BF6849] text-white text-base sm:text-lg px-3 py-2 w-fit">
+              <CardHeader className="pb-3 sm:pb-4">
+                <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 sm:gap-3 mb-3 sm:mb-4">
+                  <Badge className="bg-[#BF6849] text-white text-sm sm:text-base lg:text-lg px-2 sm:px-3 py-1 sm:py-2 w-fit">
                     #{vehicle.entry_number}
                   </Badge>
                   <Badge
                     variant="outline"
-                    className="border-[#BF6849] text-[#BF6849] text-base sm:text-lg px-3 py-2 w-fit"
+                    className="border-[#BF6849] text-[#BF6849] text-sm sm:text-base lg:text-lg px-2 sm:px-3 py-1 sm:py-2 w-fit"
                   >
-                    <Trophy className="h-4 w-4 mr-1" />
-                    <span className="hidden sm:inline">People's Choice</span>
-                    <span className="sm:hidden">People's Choice</span>
+                    <Trophy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                    <span className="text-xs sm:text-sm lg:text-base">People's Choice</span>
                   </Badge>
                 </div>
-                <CardTitle className="text-2xl sm:text-3xl font-bold text-[#3A403D] break-words">
+                <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-bold text-[#3A403D] break-words leading-tight">
                   {vehicle.year} {vehicle.make} {vehicle.model}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 sm:space-y-6">
                 {/* Owner Information */}
                 <div className="flex items-start space-x-2 text-[#3A403D]/80">
-                  <User className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span className="break-words">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0" />
+                  <span className="break-words text-sm sm:text-base">
                     Owned by <strong className="break-words">{vehicle.full_name}</strong>
                   </span>
                 </div>
 
                 {/* Location */}
                 <div className="flex items-start space-x-2 text-[#3A403D]/80">
-                  <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                  <span className="break-words">
+                  <MapPin className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0" />
+                  <span className="break-words text-sm sm:text-base">
                     {vehicle.city}, {vehicle.state}
                   </span>
                 </div>
@@ -341,18 +340,20 @@ export default function VehicleProfilePage() {
                 {/* Registration Date */}
                 {vehicle.created_at && (
                   <div className="flex items-start space-x-2 text-[#3A403D]/80">
-                    <Calendar className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                    <span>Registered {new Date(vehicle.created_at).toLocaleDateString()}</span>
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">
+                      Registered {new Date(vehicle.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 )}
 
                 <div className="space-y-2">
                   <div className="flex items-start space-x-2 text-[#BF6849] font-semibold">
-                    <Heart className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                    <span>{totalVotes} total votes</span>
+                    <Heart className="h-4 w-4 sm:h-5 sm:w-5 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">{totalVotes} total votes</span>
                   </div>
                   {voteCountsByCategory.length > 0 && (
-                    <div className="text-sm text-[#3A403D]/70 ml-7 space-y-1">
+                    <div className="text-xs sm:text-sm text-[#3A403D]/70 ml-6 sm:ml-7 space-y-1">
                       {voteCountsByCategory.map((category, index) => (
                         <div key={category.categoryId} className="break-words">
                           {category.categoryName}: {category.count} vote{category.count !== 1 ? "s" : ""}
@@ -364,18 +365,18 @@ export default function VehicleProfilePage() {
 
                 {/* Description */}
                 {vehicle.description && (
-                  <div className="bg-[#F2EEEB] rounded-lg p-4">
-                    <h4 className="font-semibold text-[#3A403D] mb-2">Description</h4>
-                    <p className="text-[#3A403D]/80 whitespace-pre-wrap break-words leading-relaxed">
+                  <div className="bg-[#F2EEEB] rounded-lg p-3 sm:p-4">
+                    <h4 className="font-semibold text-[#3A403D] mb-2 text-sm sm:text-base">Description</h4>
+                    <p className="text-[#3A403D]/80 whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-base">
                       {vehicle.description}
                     </p>
                   </div>
                 )}
 
                 {/* Vehicle Specifications */}
-                <div className="bg-[#F2EEEB] rounded-lg p-4">
-                  <h4 className="font-semibold text-[#3A403D] mb-3">Specifications</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div className="bg-[#F2EEEB] rounded-lg p-3 sm:p-4">
+                  <h4 className="font-semibold text-[#3A403D] mb-3 text-sm sm:text-base">Specifications</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                     <div className="min-w-0">
                       <span className="text-[#3A403D]/60">Year:</span>
                       <span className="ml-2 font-medium text-[#3A403D] break-words">{vehicle.year}</span>
@@ -397,47 +398,52 @@ export default function VehicleProfilePage() {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-[#BF6849]/5 to-[#A9BF88]/5 border-2 border-[#BF6849]/20 rounded-lg p-4 sm:p-6">
+                <div className="bg-gradient-to-r from-[#BF6849]/5 to-[#A9BF88]/5 border-2 border-[#BF6849]/20 rounded-lg p-3 sm:p-4 lg:p-6">
                   <div className="text-center">
                     {hasVotedForThisVehicle ? (
-                      <Lock className="h-10 w-10 sm:h-12 sm:w-12 text-[#A9BF88] mx-auto mb-4" />
+                      <Lock className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-[#A9BF88] mx-auto mb-3 sm:mb-4" />
                     ) : (
-                      <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-[#BF6849] mx-auto mb-4" />
+                      <Trophy className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 text-[#BF6849] mx-auto mb-3 sm:mb-4" />
                     )}
-                    <h3 className="text-lg sm:text-xl font-bold text-[#3A403D] mb-2 break-words">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-[#3A403D] mb-2 break-words leading-tight">
                       {hasVotedForThisVehicle ? "You Voted for This Vehicle!" : "Vote for People's Choice Award"}
                     </h3>
 
                     {hasVotedForThisVehicle ? (
-                      <div>
-                        <Alert className="border-[#A9BF88] bg-[#A9BF88]/5 mb-4">
+                      <div className="space-y-3 sm:space-y-4">
+                        <Alert className="border-[#A9BF88] bg-[#A9BF88]/5">
                           <Lock className="h-4 w-4 text-[#A9BF88]" />
-                          <AlertDescription className="text-left">
+                          <AlertDescription className="text-left text-sm">
                             <strong>Your vote is recorded!</strong>
                             <br />
                             You have successfully voted for this vehicle in one or more categories.
                           </AlertDescription>
                         </Alert>
-                        <Button asChild variant="outline" className="bg-transparent w-full sm:w-auto">
+                        <Button
+                          asChild
+                          variant="outline"
+                          className="bg-transparent w-full sm:w-auto text-sm sm:text-base"
+                        >
                           <Link href="/vehicles">Browse Other Vehicles</Link>
                         </Button>
                       </div>
                     ) : (
-                      <div>
-                        <Alert className="border-blue-500 bg-blue-50 mb-4">
+                      <div className="space-y-3 sm:space-y-4">
+                        <Alert className="border-blue-500 bg-blue-50">
                           <Info className="h-4 w-4 text-blue-500" />
-                          <AlertDescription className="text-left text-blue-700">
+                          <AlertDescription className="text-left text-blue-700 text-sm">
                             <strong>Voting Rules:</strong> You can vote one time in the people's choice category.
                           </AlertDescription>
                         </Alert>
                         <Button
                           asChild
-                          className="bg-[#BF6849] hover:bg-[#BF6849]/90 text-white px-4 sm:px-8 py-3 w-full sm:w-auto"
+                          className="bg-[#BF6849] hover:bg-[#BF6849]/90 text-white px-3 sm:px-4 lg:px-8 py-2 sm:py-3 w-full sm:w-auto text-sm sm:text-base"
                         >
                           <Link href={`/vote?vehicle=${vehicle.id}`}>
                             <Trophy className="h-4 w-4 sm:h-5 sm:w-5 mr-2 flex-shrink-0" />
-                            <span className="text-sm sm:text-base break-words">
-                              Vote This Vehicle For People's Choice Award
+                            <span className="break-words leading-tight">
+                              <span className="sm:hidden">Vote for People's Choice</span>
+                              <span className="hidden sm:inline">Vote This Vehicle For People's Choice Award</span>
                             </span>
                           </Link>
                         </Button>
@@ -447,11 +453,11 @@ export default function VehicleProfilePage() {
                 </div>
 
                 {/* Additional Actions */}
-                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4">
-                  <Button asChild variant="outline" className="bg-transparent">
+                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4">
+                  <Button asChild variant="outline" className="bg-transparent text-sm sm:text-base">
                     <Link href="/vehicles">Browse More Vehicles</Link>
                   </Button>
-                  <Button asChild variant="outline" className="bg-transparent">
+                  <Button asChild variant="outline" className="bg-transparent text-sm sm:text-base">
                     <Link href="/results">View Results</Link>
                   </Button>
                 </div>
@@ -460,13 +466,13 @@ export default function VehicleProfilePage() {
           </div>
         </div>
 
-        {/* Image Lightbox Modal */}
         {lightboxOpen && (
-          <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-2 sm:p-4">
+          <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-1 sm:p-2 lg:p-4">
             {/* Close button */}
             <button
               onClick={closeLightbox}
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+              className="absolute top-1 right-1 sm:top-2 sm:right-2 lg:top-4 lg:right-4 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+              aria-label="Close lightbox"
             >
               <X className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
@@ -476,13 +482,15 @@ export default function VehicleProfilePage() {
               <>
                 <button
                   onClick={() => navigateImage("prev")}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+                  className="absolute left-1 sm:left-2 lg:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+                  aria-label="Previous image"
                 >
                   <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
                 <button
                   onClick={() => navigateImage("next")}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+                  className="absolute right-1 sm:right-2 lg:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 sm:p-3 transition-colors touch-manipulation"
+                  aria-label="Next image"
                 >
                   <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
@@ -491,13 +499,13 @@ export default function VehicleProfilePage() {
 
             {/* Image counter */}
             {allImages.length > 1 && (
-              <div className="absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white/10 text-white px-3 py-1 rounded-full text-sm">
+              <div className="absolute bottom-1 sm:bottom-2 lg:bottom-4 left-1/2 -translate-x-1/2 z-10 bg-white/10 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
                 {currentImageIndex + 1} of {allImages.length}
               </div>
             )}
 
             {/* Main image */}
-            <div className="relative max-w-full max-h-full">
+            <div className="relative w-full h-full flex items-center justify-center p-8 sm:p-12">
               <Image
                 src={allImages[currentImageIndex] || "/placeholder.svg"}
                 alt={`${vehicle.year} ${vehicle.make} ${vehicle.model} - Image ${currentImageIndex + 1}`}
