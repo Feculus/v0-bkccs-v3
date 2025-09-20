@@ -81,20 +81,20 @@ export default function RegisterPageClient() {
   }
 
   const validateFile = (file: File): { isValid: boolean; error?: string } => {
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
-    const maxSize = 5 * 1024 * 1024 // 5MB
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
+    const maxSize = 10 * 1024 * 1024 // 10MB
 
     if (!allowedTypes.includes(file.type)) {
       return {
         isValid: false,
-        error: `Invalid file type. Only JPEG, PNG, and WebP images are supported.`,
+        error: `Invalid file type. Only JPEG, PNG, WebP, HEIC, and TIFF images are supported.`,
       }
     }
 
     if (file.size > maxSize) {
       return {
         isValid: false,
-        error: `File too large (${formatFileSize(file.size)}). Maximum size is 5MB.`,
+        error: `File too large (${formatFileSize(file.size)}). Maximum size is 10MB.`,
       }
     }
 
@@ -762,7 +762,7 @@ export default function RegisterPageClient() {
 
               <div className="space-y-4">
                 <h3 className="text-xl font-semibold text-bk-dark-gray border-b border-bk-bright-red pb-2">
-                  Vehicle Photos * (Maximum 5 photos, 5MB each)
+                  Vehicle Photos * (Maximum 5 photos, 10MB each)
                 </h3>
 
                 {photoPreviewUrls.length > 0 && (
@@ -812,7 +812,7 @@ export default function RegisterPageClient() {
                     id="photos"
                     type="file"
                     multiple
-                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/tiff,image/tif"
                     onChange={handlePhotoChange}
                     className="hidden"
                     required={photos.length === 0}
@@ -820,9 +820,9 @@ export default function RegisterPageClient() {
                     key={photos.length}
                   />
                   <p className="text-sm text-bk-dark-gray/60 mt-2">
-                    Upload multiple photos at once. Maximum 5 photos total, 5MB each.
+                    Upload multiple photos at once. Maximum 5 photos total, 10MB each.
                   </p>
-                  <p className="text-sm text-bk-dark-gray/60">Supported formats: JPEG, PNG, WebP</p>
+                  <p className="text-sm text-bk-dark-gray/60">Supported formats: JPEG, PNG, WebP, HEIC, TIFF</p>
                   {photos.length > 0 && (
                     <p className="text-sm text-bk-deep-red mt-2 font-semibold">{photos.length} photo(s) selected</p>
                   )}

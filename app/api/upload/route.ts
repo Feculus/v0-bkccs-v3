@@ -43,10 +43,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
     if (!allowedTypes.includes(fileBlob.type)) {
       console.log("[v0] Upload API: Invalid file type:", fileBlob.type)
-      return NextResponse.json({ error: "Only JPEG, PNG, and WebP images are allowed" }, { status: 400 })
+      return NextResponse.json({ error: "Only JPEG, PNG, WebP, HEIC, and TIFF images are allowed" }, { status: 400 })
     }
 
     console.log("[v0] Upload API: Creating File object for blob upload")

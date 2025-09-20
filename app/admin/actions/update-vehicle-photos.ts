@@ -65,14 +65,14 @@ export async function updateVehiclePhotos(vehicleId: number, formData: FormData)
       return { success: false, error: "Maximum 5 photos allowed" }
     }
 
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
     let totalSize = 0
 
     for (const file of newFiles) {
       if (!allowedTypes.includes(file.type)) {
         return {
           success: false,
-          error: `File "${file.name}" is not a supported image type. Please use JPEG, PNG, or WebP.`,
+          error: `File "${file.name}" is not a supported image type. Please use JPEG, PNG, WebP, HEIC, or TIFF.`,
         }
       }
       if (file.size > 10 * 1024 * 1024) {

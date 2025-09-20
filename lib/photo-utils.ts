@@ -5,13 +5,13 @@ export interface PhotoUploadResult {
 }
 
 export function validatePhotoFile(file: File): { valid: boolean; error?: string } {
-  if (file.size > 5 * 1024 * 1024) {
-    return { valid: false, error: "File size must be less than 5MB" }
+  if (file.size > 10 * 1024 * 1024) {
+    return { valid: false, error: "File size must be less than 10MB" }
   }
 
-  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+  const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
   if (!allowedTypes.includes(file.type)) {
-    return { valid: false, error: "Only JPEG, PNG, and WebP images are allowed" }
+    return { valid: false, error: "Only JPEG, PNG, WebP, HEIC, and TIFF images are allowed" }
   }
 
   return { valid: true }

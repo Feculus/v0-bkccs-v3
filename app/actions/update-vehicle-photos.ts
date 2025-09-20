@@ -64,13 +64,13 @@ export async function updateVehiclePhotos(vehicleId: number, formData: FormData)
     }
 
     // Validate new files
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
     for (const file of newFiles) {
       if (!allowedTypes.includes(file.type)) {
         return { success: false, error: `File "${file.name}" is not a supported image type` }
       }
-      if (file.size > 5 * 1024 * 1024) {
-        return { success: false, error: `File "${file.name}" is too large. Maximum size is 5MB` }
+      if (file.size > 10 * 1024 * 1024) {
+        return { success: false, error: `File "${file.name}" is too large. Maximum size is 10MB` }
       }
     }
 
