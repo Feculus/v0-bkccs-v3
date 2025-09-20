@@ -42,10 +42,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: "File size exceeds 10MB limit" }, { status: 400 })
     }
 
-    // Validate file type
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
-    if (!allowedTypes.includes(fileBlob.type)) {
-      console.log("[v0] Upload API: Invalid file type:", fileBlob.type)
+    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "heic", "tiff", "tif"]
+
+    const fileExtension = sanitizedFilename.split(".").pop()?.toLowerCase()
+
+    // Check both MIME type and file extension for better HEIC support
+    const isValidType = allowedTypes.includes(fileBlob.type)
+    const isValidExtension = fileExtension && allowedExtensions.includes(fileExtension)
+
+    if (!isValidType && !isValidExtension) {
+      console.log("[v0] Upload API: Invalid file type:", fileBlob.type, "and extension:", fileExtension)
       return NextResponse.json({ error: "Only JPEG, PNG, WebP, HEIC, and TIFF images are allowed" }, { status: 400 })
     }
 

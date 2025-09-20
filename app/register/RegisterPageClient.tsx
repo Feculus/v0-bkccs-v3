@@ -82,9 +82,16 @@ export default function RegisterPageClient() {
 
   const validateFile = (file: File): { isValid: boolean; error?: string } => {
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
+    const allowedExtensions = ["jpg", "jpeg", "png", "webp", "heic", "tiff", "tif"]
     const maxSize = 10 * 1024 * 1024 // 10MB
 
-    if (!allowedTypes.includes(file.type)) {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase()
+
+    // Check both MIME type and file extension for better HEIC support
+    const isValidType = allowedTypes.includes(file.type)
+    const isValidExtension = fileExtension && allowedExtensions.includes(fileExtension)
+
+    if (!isValidType && !isValidExtension) {
       return {
         isValid: false,
         error: `Invalid file type. Only JPEG, PNG, WebP, HEIC, and TIFF images are supported.`,
@@ -812,7 +819,7 @@ export default function RegisterPageClient() {
                     id="photos"
                     type="file"
                     multiple
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/tiff,image/tif"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/tiff,image/tif,.jpg,.jpeg,.png,.webp,.heic,.tiff,.tif"
                     onChange={handlePhotoChange}
                     className="hidden"
                     required={photos.length === 0}

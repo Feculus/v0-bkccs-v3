@@ -10,7 +10,15 @@ export function validatePhotoFile(file: File): { valid: boolean; error?: string 
   }
 
   const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/tiff", "image/tif"]
-  if (!allowedTypes.includes(file.type)) {
+  const allowedExtensions = ["jpg", "jpeg", "png", "webp", "heic", "tiff", "tif"]
+
+  const fileExtension = file.name.split(".").pop()?.toLowerCase()
+
+  // Check both MIME type and file extension for better HEIC support
+  const isValidType = allowedTypes.includes(file.type)
+  const isValidExtension = fileExtension && allowedExtensions.includes(fileExtension)
+
+  if (!isValidType && !isValidExtension) {
     return { valid: false, error: "Only JPEG, PNG, WebP, HEIC, and TIFF images are allowed" }
   }
 
