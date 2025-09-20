@@ -781,7 +781,7 @@ export default function AdminPage() {
     .card {
       width: 6in;
       height: 5in;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      background: linear-gradient(135deg, #F2F2F2 0%, #e9ecef 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -790,7 +790,7 @@ export default function AdminPage() {
       padding: 30px 20px;
       box-sizing: border-box;
       border-radius: 8px;
-      box-shadow: inset 0 0 0 1px #dee2e6;
+      box-shadow: inset 0 0 0 1px #8C1F28;
       position: relative;
       z-index: 1;
     }
@@ -801,7 +801,7 @@ export default function AdminPage() {
     .event-title {
       font-size: 18px;
       font-weight: 700;
-      color: #2c3e50;
+      color: #0D0D0D;
       margin: 0 0 8px 0;
       line-height: 1.2;
       letter-spacing: 0.5px;
@@ -809,7 +809,7 @@ export default function AdminPage() {
     .event-subtitle {
       font-size: 12px;
       font-weight: 500;
-      color: #6c757d;
+      color: #8C1F28;
       margin: 0 0 15px 0;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -825,21 +825,21 @@ export default function AdminPage() {
     .entry-number {
       font-size: 42px;
       font-weight: 900;
-      color: #BF6849;
+      color: #F21D2F;
       margin: 0 0 12px 0;
       line-height: 1;
-      text-shadow: 0 2px 4px rgba(191, 104, 73, 0.2);
+      text-shadow: 0 2px 4px rgba(242, 29, 47, 0.2);
     }
     .vehicle-info {
       font-size: 22px;
       font-weight: 700;
-      color: #2c3e50;
+      color: #0D0D0D;
       margin: 0 0 8px 0;
       line-height: 1.2;
     }
     .owner-info {
       font-size: 14px;
-      color: #6c757d;
+      color: rgba(13, 13, 13, 0.6);
       margin: 0 0 20px 0;
       line-height: 1.3;
       font-weight: 500;
@@ -852,7 +852,7 @@ export default function AdminPage() {
       flex-shrink: 0;
     }
     .qr-code {
-      border: 2px solid #2c3e50;
+      border: 2px solid #0D0D0D;
       padding: 6px;
       background: white;
       display: inline-block;
@@ -861,7 +861,7 @@ export default function AdminPage() {
     }
     .qr-text {
       font-size: 12px;
-      color: #2c3e50;
+      color: #0D0D0D;
       font-weight: 600;
       margin: 0;
       text-transform: uppercase;
@@ -870,20 +870,20 @@ export default function AdminPage() {
     .footer-section {
       width: 100%;
       flex-shrink: 0;
-      border-top: 1px solid #dee2e6;
+      border-top: 1px solid #8C1F28;
       padding-top: 12px;
       margin-top: 15px;
     }
     .footer-text {
       font-size: 10px;
-      color: #6c757d;
+      color: rgba(13, 13, 13, 0.6);
       margin: 0;
       font-weight: 500;
     }
     .decorative-line {
       width: 60px;
       height: 2px;
-      background: #BF6849;
+      background: #F21D2F;
       margin: 8px auto;
       border-radius: 1px;
     }
@@ -904,7 +904,7 @@ export default function AdminPage() {
     <div class="cut-border"></div>
     <div class="card">
       <div class="header-section">
-        <h1 class="event-title">2025 CRUISERFEST</h1>
+        <h1 class="event-title">2025 Cars For A Cause Show</h1>
         <p class="event-subtitle">Show-N-Shine</p>
         <div class="decorative-line"></div>
       </div>
@@ -934,7 +934,7 @@ export default function AdminPage() {
       </div>
       
       <div class="footer-section">
-        <p class="footer-text">Land Cruiser Heritage Museum • Salt Lake City, Utah</p>
+        <p class="footer-text">Big Kid Custom Ride's | Orem, UT</p>
       </div>
     </div>
   </div>
